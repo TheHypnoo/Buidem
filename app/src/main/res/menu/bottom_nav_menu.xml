@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/miHome"
+        android:title="Home"
+        android:icon="@drawable/ic_machine"/>
+
+    <item android:id="@+id/miMovements"
+        android:title="Movements"
+        android:icon="@drawable/ic_machine"/>
+
+    <item android:id="@+id/placeholder"
+        android:title="" />
+
+    <item android:id="@+id/miWeather"
+        android:title="Weather"
+        android:icon="@drawable/ic_machine" />
+
+    <item android:id="@+id/miInfo"
+        android:title="Info"
+        android:icon="@drawable/ic_machine"/>
+</menu>
