@@ -31,12 +31,20 @@ class CreateZonesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         database = MachinesApplication.getDatabase(this@CreateZonesFragment.requireContext())
         binding.fabSaveCreateZone.setOnClickListener {
-            val zone = Zones(
-                0,
-                binding.etZone.text.toString(),
-            )
-            CoroutineScope(Dispatchers.IO).launch {
-                database.MachinesApplication().insertZones(zone)
+            if (binding.etZone.text.isEmpty()) {
+                utilWidgets.snackbarMessage(
+                    binding.root,
+                    "No has introducido ningún nombre para crear la zona",
+                    false
+                )
+            } else {
+                val zone = Zones(
+                    0,
+                    binding.etZone.text.toString(),
+                )
+                CoroutineScope(Dispatchers.IO).launch {
+                    database.MachinesApplication().insertZones(zone)
+                }
             }
         }
     }

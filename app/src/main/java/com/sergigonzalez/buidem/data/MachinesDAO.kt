@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import java.time.ZoneId
 
 @Dao
 interface MachinesDAO {
@@ -17,6 +18,12 @@ interface MachinesDAO {
 
     @Query("SELECT * FROM Zones")
     fun getAllZones(): LiveData<List<Zones>>
+
+    @Query("SELECT * FROM Machines WHERE zone = :id")
+    fun searchZoneinMachine(id: Int): Boolean
+
+    @Query("SELECT * FROM Machines WHERE TypeMachine = :id")
+    fun searchTypeMachineinMachine(id: Int): Boolean
 
     @Insert
     fun insertMachine(Machines: Machines)

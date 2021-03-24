@@ -74,7 +74,11 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
             }
         binding.fabSaveCreateMachine.setOnClickListener {
             if (Check()) {
-                util_widgets().snackbarMessage(binding.root, "AA", true)
+                util_widgets().snackbarMessage(
+                    binding.root,
+                    "Se ha creado correctamente la Maquina",
+                    true
+                )
                 val machine = Machines(
                     0,
                     binding.etNameClient.text.toString(),
@@ -91,32 +95,64 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 CoroutineScope(Dispatchers.IO).launch {
                     database.MachinesApplication().insertMachine(machine)
                 }
-
             } else {
-                util_widgets().snackbarMessage(binding.root, "AA", false)
+                util_widgets().snackbarMessage(
+                    binding.root,
+                    "No puedes crear una maquina sin introducir nada",
+                    false
+                )
             }
         }
     }
 
     fun Check(): Boolean {
-        if (binding.etNameClient.text.isEmpty()) {
-            return false
-        } else if (binding.etSerialNumberMachine.text.isEmpty()) {
-            return false
-        } else if (binding.etPhoneContact.text.isEmpty()) {
-            return false
-        } else if (binding.etEmailContact.text.isEmpty()) {
-            return false
-        } else if (binding.etDateLastRevision.text.isEmpty()) {
-            return false
-        } else if (binding.etCodePostal.text.isEmpty()) {
-            return false
-        } else if (binding.etTown.text.isEmpty()) {
-            return false
-        } else if (binding.etAddress.text.isEmpty()) {
-            return false
+        when {
+            binding.etNameClient.text.isEmpty() -> {
+                util_widgets().snackbarMessage(
+                    binding.root,
+                    "Debes añadir un nombre al cliente",
+                    false
+                )
+                return false
+            }
+            binding.etSerialNumberMachine.text.isEmpty() -> {
+                util_widgets().snackbarMessage(
+                    binding.root,
+                    "Debes añadir un numero de serie a la maquina",
+                    false
+                )
+                return false
+            }
+            binding.etCodePostal.text.isEmpty() -> {
+                util_widgets().snackbarMessage(binding.root, "Debes añadir un Codigo Postal", false)
+                return false
+            }
+            binding.etTown.text.isEmpty() -> {
+                util_widgets().snackbarMessage(binding.root, "Debes añadir una poblacion", false)
+                return false
+            }
+            binding.etAddress.text.isEmpty() -> {
+                util_widgets().snackbarMessage(binding.root, "Debes añadir una dirección", false)
+                return false
+            }
+            selectedZone.isEmpty() -> {
+                util_widgets().snackbarMessage(
+                    binding.root,
+                    "Debes añadir una zona antes de crear la maquina",
+                    false
+                )
+                return false
+            }
+            selectedTypeMachine.isEmpty() -> {
+                util_widgets().snackbarMessage(
+                    binding.root,
+                    "Debes añadir una zona antes de crear la maquina",
+                    false
+                )
+                return false
+            }
+            else -> return true
         }
-        return true
     }
 
     fun getZones() {

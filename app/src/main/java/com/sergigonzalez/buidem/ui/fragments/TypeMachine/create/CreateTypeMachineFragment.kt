@@ -31,15 +31,22 @@ class CreateTypeMachineFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         database = MachinesApplication.getDatabase(this@CreateTypeMachineFragment.requireContext())
         binding.fabSaveCreateTypeMachine.setOnClickListener {
-            val TypeMachine = TypeMachines(
-                0,
-                binding.edtNameTM.text.toString(),
-                binding.edtColorTM.text.toString(),
-            )
-            CoroutineScope(Dispatchers.IO).launch {
-                database.MachinesApplication().insertTypeMachine(TypeMachine)
+            if (binding.etNameTypeMachine.text.isEmpty()) {
+                utilWidgets.snackbarMessage(
+                    binding.root,
+                    "No has introducido ningún nombre para el tipo de maquina",
+                    false
+                )
+            } else {
+                val TypeMachine = TypeMachines(
+                    0,
+                    binding.etNameTypeMachine.text.toString(),
+                    binding.etColorTypeMachine.text.toString(),
+                )
+                CoroutineScope(Dispatchers.IO).launch {
+                    database.MachinesApplication().insertTypeMachine(TypeMachine)
+                }
             }
         }
     }
-
 }

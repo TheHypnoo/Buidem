@@ -6,7 +6,8 @@
     android:orientation="horizontal"
     card_view:cardCornerRadius="10dp"
     card_view:cardElevation="5dp"
-    card_view:cardUseCompatPadding="true">
+    card_view:cardUseCompatPadding="true"
+    android:id="@+id/cvZone">
 
     <!--Linear Layout Principal-->
     <LinearLayout

@@ -19,6 +19,7 @@ import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ZonesFragment : Fragment() {
     private lateinit var database: MachinesApplication
@@ -69,25 +70,41 @@ class ZonesFragment : Fragment() {
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                    val builder = AlertDialog.Builder(view?.context)
                     val position = viewHolder.adapterPosition
-                    builder.setMessage("Estas seguro que deseas eliminar la Zona?\nCon Nombre: ${listZones[position].nameZone}")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val checkCreatedZone: Boolean = database.MachinesApplication()
+                            .searchZoneinMachine(listZones[position]._id)
+                        withContext(Dispatchers.Main) {
+                            if (checkCreatedZone) {
+                                utilWidgets.snackbarMessage(
+                                    binding.root,
+                                    "Hay una maquina asignada a esta zona, debes eliminar primero la maquina",
+                                    false
+                                )
+                                binding.rvZones.adapter!!.notifyItemChanged(position)
+                            } else {
+                                val builder = AlertDialog.Builder(view?.context)
+
+                                builder.setMessage("Estas seguro que deseas eliminar la Zona?\nCon Nombre: ${listZones[position].nameZone}")
 
 
-                    builder.setPositiveButton(android.R.string.ok) { _, _ ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            database.MachinesApplication().deleteZone(listZones[position])
+                                builder.setPositiveButton(android.R.string.ok) { _, _ ->
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        database.MachinesApplication()
+                                            .deleteZone(listZones[position])
+                                    }
+                                    binding.rvZones.adapter!!.notifyItemRemoved(position)
+                                }
+
+                                builder.setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                                    dialog.dismiss()
+                                    binding.rvZones.adapter!!.notifyItemChanged(position)
+                                }
+
+                                builder.show()
+                            }
                         }
-                        binding.rvZones.adapter!!.notifyItemRemoved(position)
                     }
-
-                    builder.setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                        dialog.dismiss()
-                        binding.rvZones.adapter!!.notifyItemChanged(position)
-                    }
-
-                    builder.show()
-
                 }
             }
 

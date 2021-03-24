@@ -1,5 +1,6 @@
 package com.sergigonzalez.buidem.ui.fragments.TypeMachine
 
+import android.R
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TypeMachinesFragment : Fragment() {
     private lateinit var database: MachinesApplication
@@ -69,26 +71,40 @@ class TypeMachinesFragment : Fragment() {
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                    val builder = AlertDialog.Builder(view?.context)
                     val position = viewHolder.adapterPosition
-                    builder.setMessage("Estas seguro que deseas eliminar la Maquina?\nCon Nombre: ${listTypeMachines[position].nameTypeMachine}\ny Color:  ${listTypeMachines[position].colorTypeMachine}")
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val checkCreatedTypeMachine: Boolean = database.MachinesApplication()
+                            .searchTypeMachineinMachine(listTypeMachines[position]._id)
+                        withContext(Dispatchers.Main) {
+                            if (checkCreatedTypeMachine) {
+                                utilWidgets.snackbarMessage(
+                                    binding.root,
+                                    "Hay una Maquina asignada a este tipo de maquina, debes eliminar primero la maquina",
+                                    false
+                                )
+                                binding.rvTypeMachines.adapter!!.notifyItemChanged(position)
+                            } else {
+                                val builder = AlertDialog.Builder(view?.context)
+                                builder.setMessage("Estas seguro que deseas eliminar la Maquina?\nCon Nombre: ${listTypeMachines[position].nameTypeMachine}\ny Color:  ${listTypeMachines[position].colorTypeMachine}")
 
 
-                    builder.setPositiveButton(android.R.string.ok) { _, _ ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            database.MachinesApplication()
-                                .deleteTypeMachine(listTypeMachines[position])
+                                builder.setPositiveButton(R.string.ok) { _, _ ->
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        database.MachinesApplication()
+                                            .deleteTypeMachine(listTypeMachines[position])
+                                    }
+                                    binding.rvTypeMachines.adapter!!.notifyItemRemoved(position)
+                                }
+
+                                builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                                    dialog.dismiss()
+                                    binding.rvTypeMachines.adapter!!.notifyItemChanged(position)
+                                }
+
+                                builder.show()
+                            }
                         }
-                        binding.rvTypeMachines.adapter!!.notifyItemRemoved(position)
                     }
-
-                    builder.setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                        dialog.dismiss()
-                        binding.rvTypeMachines.adapter!!.notifyItemChanged(position)
-                    }
-
-                    builder.show()
-
                 }
             }
 

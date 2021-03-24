@@ -24,7 +24,7 @@
             android:textSize="22sp" />
 
         <EditText
-            android:id="@+id/edtNameTM"
+            android:id="@+id/etNameTypeMachine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -38,7 +38,7 @@
             android:textSize="22sp" />
 
         <EditText
-            android:id="@+id/edtColorTM"
+            android:id="@+id/etColorTypeMachine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
