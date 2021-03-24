@@ -2,15 +2,21 @@ package com.sergigonzalez.buidem.ui.activitys
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.sergigonzalez.buidem.R
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.databinding.ActivityMainBinding
+import com.sergigonzalez.buidem.ui.fragments.*
+import com.sergigonzalez.buidem.ui.fragments.Machine.MachinesFragment
+import com.sergigonzalez.buidem.ui.fragments.Maps.MapsFragment
+import com.sergigonzalez.buidem.ui.fragments.TypeMachine.TypeMachinesFragment
+import com.sergigonzalez.buidem.ui.fragments.Zone.ZonesFragment
+import com.sergigonzalez.buidem.utils.util_widgets
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var database: MachinesApplication
+    private var utilWidgets = util_widgets()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,33 +25,28 @@ class MainActivity : AppCompatActivity() {
         database = MachinesApplication.getDatabase(this)
         binding.bottomNavigationView.background = null
         binding.bottomNavigationView.selectedItemId = R.id.miHome
-        binding.bottomNavigationView.menu.getItem(2).isEnabled = false
+        utilWidgets.replaceFragment(MachinesFragment(), this)
         binding.bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.miHome -> {
-
+                    utilWidgets.replaceFragment(MachinesFragment(), this)
                     return@setOnNavigationItemSelectedListener true
                 }
-                R.id.miMovements -> {
-
+                R.id.miZones -> {
+                    utilWidgets.replaceFragment(ZonesFragment(), this)
                     return@setOnNavigationItemSelectedListener true
                 }
-                R.id.miWeather -> {
-
+                R.id.miTypeMachines -> {
+                    utilWidgets.replaceFragment(TypeMachinesFragment(), this)
                     return@setOnNavigationItemSelectedListener true
                 }
-                R.id.miInfo -> {
-
+                R.id.miMaps -> {
+                    utilWidgets.replaceFragment(MapsFragment(), this)
                     return@setOnNavigationItemSelectedListener true
                 }
                 else -> false
             }
         }
     }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        transaction.commit()
-    }
+    
 }

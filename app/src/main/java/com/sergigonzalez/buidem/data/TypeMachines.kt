@@ -8,14 +8,12 @@ import java.io.Serializable
 @Entity(
     tableName = "TypeMachines"
 )
-class TypeMachines(
+data class TypeMachines(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     var _id: Int = 0,
     @ColumnInfo(name = "typeMachine")
-    var typeMachine: String = "typeMachine",
-    @ColumnInfo(name = "descriptionTypeMachine")
-    var descriptionTypeMachine: String = "descriptionTypeMachine",
+    var nameTypeMachine: String = "nameTypeMachine",
     @ColumnInfo(name = "colorTypeMachine")
     var colorTypeMachine: String = "colorTypeMachine"
 ) : Serializable

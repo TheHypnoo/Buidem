@@ -8,12 +8,10 @@ import java.io.Serializable
 @Entity(
     tableName = "Zones"
 )
-class Zones(
+data class Zones(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     var _id: Int = 0,
     @ColumnInfo(name = "nameZone")
     var nameZone: String = "nameZone",
-    @ColumnInfo(name = "descriptionZone")
-    var descriptionZone: String = "descriptionZone"
 ) : Serializable

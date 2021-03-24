@@ -17,12 +17,11 @@ import java.io.Serializable
             childColumns = arrayOf("typeMachine"),
             onDelete = ForeignKey.CASCADE
         )], indices = [Index(value = ["serialNumberMachine"], unique = true)]
-            //No puedes crear mas de una maquina con su serialNumberMachine
+    //No puedes crear mas de una maquina con su serialNumberMachine
 
 )
-//indices = [Index(value = ["idMachine"], unique = true)]
 
-class Machines(
+data class Machines(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     var _id: Int = 0,

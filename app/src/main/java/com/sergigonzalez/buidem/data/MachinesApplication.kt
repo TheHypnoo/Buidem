@@ -5,7 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Machines::class, Zones::class, TypeMachines::class], version = 1)
+@Database(
+    entities = [Machines::class, Zones::class, TypeMachines::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class MachinesApplication : RoomDatabase() {
 
     abstract fun MachinesApplication(): MachinesDAO

@@ -1,7 +1,6 @@
 package com.sergigonzalez.buidem.ui.activitys
 
 import android.content.Intent
-import android.content.pm.PackageInfo
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,6 +17,7 @@ class Loading : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoadingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        actionBar?.hide();
 
         val zoomIn = AnimationUtils.loadAnimation(this, R.anim.zoom_in)
         binding.tvMessage.startAnimation(zoomIn)

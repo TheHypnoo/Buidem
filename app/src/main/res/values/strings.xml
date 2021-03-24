@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Buidem</string>
+    <!--Item Machine-->
+    <string name="nameClient">Nombre Cliente</string>
+    <string name="address">Dirección</string>
+    <string name="SerialNumberMachine">Nº de Serie</string>
+    <string name="dateLastRevision">Fecha Ult. Revisión</string>
+    <!--Item Type Machine-->
+    <string name="NameTypeMachine">Tipo de Maquina</string>
+    <string name="colorTypeMachine">Color</string>
 </resources>
