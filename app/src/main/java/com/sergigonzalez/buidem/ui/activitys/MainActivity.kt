@@ -1,7 +1,19 @@
 package com.sergigonzalez.buidem.ui.activitys
 
+import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sergigonzalez.buidem.R
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.databinding.ActivityMainBinding
@@ -22,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         database = MachinesApplication.getDatabase(this)
         binding.bottomNavigationView.background = null
         binding.bottomNavigationView.selectedItemId = R.id.miHome
@@ -48,5 +61,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    
+
 }

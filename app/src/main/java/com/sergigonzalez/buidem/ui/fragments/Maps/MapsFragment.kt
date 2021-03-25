@@ -35,6 +35,7 @@ class MapsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = "Maps"
+        activity?.actionBar?.hide()
         mMapView = binding.mvMap
         mMapView.onCreate(savedInstanceState)
         mMapView.onResume()

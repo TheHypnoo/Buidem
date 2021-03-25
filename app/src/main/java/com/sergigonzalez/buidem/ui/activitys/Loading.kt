@@ -17,7 +17,6 @@ class Loading : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoadingBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        actionBar?.hide();
 
         val zoomIn = AnimationUtils.loadAnimation(this, R.anim.zoom_in)
         binding.tvMessage.startAnimation(zoomIn)

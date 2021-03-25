@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.data.TypeMachines
 import com.sergigonzalez.buidem.databinding.FragmentCreateTypeMachineBinding
+import com.sergigonzalez.buidem.ui.fragments.TypeMachine.TypeMachinesFragment
+import com.sergigonzalez.buidem.ui.fragments.Zone.ZonesFragment
 import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +48,7 @@ class CreateTypeMachineFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     database.MachinesApplication().insertTypeMachine(TypeMachine)
                 }
+                utilWidgets.replaceFragment(TypeMachinesFragment(), requireActivity())
             }
         }
     }

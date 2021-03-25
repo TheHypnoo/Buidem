@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.data.Zones
 import com.sergigonzalez.buidem.databinding.FragmentCreateZonesBinding
+import com.sergigonzalez.buidem.ui.fragments.Machine.MachinesFragment
+import com.sergigonzalez.buidem.ui.fragments.Zone.ZonesFragment
 import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +47,7 @@ class CreateZonesFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     database.MachinesApplication().insertZones(zone)
                 }
+                utilWidgets.replaceFragment(ZonesFragment(), requireActivity())
             }
         }
     }

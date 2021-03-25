@@ -14,6 +14,7 @@ import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.data.TypeMachines
 import com.sergigonzalez.buidem.data.Zones
 import com.sergigonzalez.buidem.databinding.FragmentCreateMachineBinding
+import com.sergigonzalez.buidem.ui.fragments.Machine.MachinesFragment
 import com.sergigonzalez.buidem.utils.DialogCalendar
 import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
@@ -95,6 +96,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 CoroutineScope(Dispatchers.IO).launch {
                     database.MachinesApplication().insertMachine(machine)
                 }
+                utilWidgets.replaceFragment(MachinesFragment(), requireActivity())
             } else {
                 util_widgets().snackbarMessage(
                     binding.root,
