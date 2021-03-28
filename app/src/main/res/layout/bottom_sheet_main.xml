@@ -7,80 +7,102 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:textColor="@color/black"
         android:layout_gravity="center"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:text="Choose"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold">
 
 
     </TextView>
 
     <LinearLayout
-        android:id="@+id/prueba"
+        android:id="@+id/llCall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_call" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share"
-            android:textSize="16dp"
-            android:layout_marginStart="30dp"/>
+            android:layout_gravity="center"
+            android:layout_marginStart="15dp"
+            android:text="Call"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
     </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/llEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_email"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share"
-            android:textSize="16dp"
-            android:layout_marginStart="30dp"/>
+            android:layout_marginStart="15dp"
+            android:layout_gravity="center"
+            android:text="Email"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
     </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/llGoogleMaps"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_google_maps_color"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share"
-            android:textSize="16dp"
-            android:layout_marginStart="30dp"/>
+            android:layout_marginStart="15dp"
+            android:layout_gravity="center"
+            android:text="Google Maps"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
     </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/llEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_edit"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share"
-            android:textSize="16dp"
-            android:layout_marginStart="30dp"/>
+            android:layout_marginStart="15dp"
+            android:layout_gravity="center"
+            android:text="Edit"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
     </LinearLayout>
 
 </LinearLayout>

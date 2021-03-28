@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.SnackbarContentLayout
 import com.sergigonzalez.buidem.R
+import com.sergigonzalez.buidem.ui.activitys.MainActivity
 
 
 class util_widgets {
@@ -20,6 +21,7 @@ class util_widgets {
     fun replaceFragment(fragment: Fragment, activity: FragmentActivity) {
         val transaction = activity.supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_container, fragment)
+        transaction.addToBackStack(null)
         transaction.commit()
     }
 
@@ -50,4 +52,6 @@ class util_widgets {
             snackbar.show()
         }
     }
+
+
 }

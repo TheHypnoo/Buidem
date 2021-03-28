@@ -16,7 +16,7 @@ import java.io.Serializable
             parentColumns = arrayOf("_id"),
             childColumns = arrayOf("typeMachine"),
             onDelete = ForeignKey.CASCADE
-        )], indices = [Index(value = ["serialNumberMachine"], unique = true)]
+        )], indices = [Index(value = ["serialNumberMachine", "typeMachine", "zone"], unique = true)]
     //No puedes crear mas de una maquina con su serialNumberMachine
 
 )

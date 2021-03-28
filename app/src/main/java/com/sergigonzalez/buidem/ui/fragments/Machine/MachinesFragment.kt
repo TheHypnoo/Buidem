@@ -343,7 +343,7 @@ class MachinesFragment : Fragment() {
         inflater.inflate(R.menu.menu_filter, menu)
         super.onCreateOptionsMenu(menu, inflater)
         val searchItem = menu.findItem(R.id.search)
-        var searchView = searchItem.actionView as SearchView
+        val searchView = searchItem.actionView as SearchView
         searchView.queryHint = "Ingresa un numero de serie"
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -363,7 +363,7 @@ class MachinesFragment : Fragment() {
     }
 
     override fun onAttach(context: Context) {
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true)
         super.onAttach(context)
     }
 

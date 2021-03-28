@@ -145,7 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:hint="Introduce la Poblacion"
-            android:inputType="date" />
+            android:inputType="text" />
 
         <Space
             android:layout_width="match_parent"
@@ -166,7 +166,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:hint="Introduce la dirección"
-            android:inputType="date" />
+            android:inputType="text" />
 
         <Space
             android:layout_width="match_parent"

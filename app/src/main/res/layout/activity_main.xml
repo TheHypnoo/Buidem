@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.activitys.MainActivity">
 
+
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"

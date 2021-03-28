@@ -1,10 +1,8 @@
 package com.sergigonzalez.buidem.data
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.lifecycle.MutableLiveData
+import androidx.room.*
 
 @Dao
 interface MachinesDAO {
@@ -30,14 +28,29 @@ interface MachinesDAO {
     @Query("SELECT * FROM Machines WHERE serialNumberMachine LIKE '%' || :name || '%'")
     fun searchSerialNumberMachine(name: String): LiveData<List<Machines>>
 
+    @Query("SELECT * FROM TypeMachines WHERE _id = :id")
+    fun searchColorTypeMachine(id: Int): TypeMachines
+
+    @Query("SELECT * FROM Machines WHERE zone = :id")
+    fun searchMachinesbyIDZone(id: Int): List<Machines>
+
     @Insert
     fun insertMachine(Machines: Machines)
+
+    @Update
+    fun updateMachine(Machines: Machines)
 
     @Insert
     fun insertTypeMachine(TypeMachines: TypeMachines)
 
+    @Update
+    fun updateTypeMachine(TypeMachines: TypeMachines)
+
     @Insert
     fun insertZones(Zones: Zones)
+
+    @Update
+    fun updateZone(Zones: Zones)
 
     @Delete
     fun deleteMachine(Machines: Machines)

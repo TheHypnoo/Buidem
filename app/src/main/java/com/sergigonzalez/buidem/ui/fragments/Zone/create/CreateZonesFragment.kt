@@ -1,5 +1,6 @@
 package com.sergigonzalez.buidem.ui.fragments.Zone.create
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.data.Zones
 import com.sergigonzalez.buidem.databinding.FragmentCreateZonesBinding
-import com.sergigonzalez.buidem.ui.fragments.Machine.MachinesFragment
 import com.sergigonzalez.buidem.ui.fragments.Zone.ZonesFragment
 import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +20,7 @@ class CreateZonesFragment : Fragment() {
     private var _binding: FragmentCreateZonesBinding? = null
     private val binding get() = _binding!!
     private var utilWidgets = util_widgets()
+    private var zone: Zones? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +33,19 @@ class CreateZonesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         database = MachinesApplication.getDatabase(this@CreateZonesFragment.requireContext())
+        if (zone != null) {
+            edit()
+        } else {
+            create()
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        zone = arguments?.getSerializable("Zone") as Zones?
+    }
+
+    fun create() {
         binding.fabSaveCreateZone.setOnClickListener {
             if (binding.etZone.text.isEmpty()) {
                 utilWidgets.snackbarMessage(
@@ -52,4 +66,25 @@ class CreateZonesFragment : Fragment() {
         }
     }
 
+    fun edit() {
+        binding.etZone.setText(zone?.nameZone)
+        binding.fabSaveCreateZone.setOnClickListener {
+            if (binding.etZone.text.isEmpty()) {
+                utilWidgets.snackbarMessage(
+                    binding.root,
+                    "El nombre de la zona esta vacio",
+                    false
+                )
+            } else {
+                val zone = Zones(
+                    zone!!._id,
+                    binding.etZone.text.toString(),
+                )
+                CoroutineScope(Dispatchers.IO).launch {
+                    database.MachinesApplication().updateZone(zone)
+                }
+                utilWidgets.replaceFragment(ZonesFragment(), requireActivity())
+            }
+        }
+    }
 }

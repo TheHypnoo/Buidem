@@ -2,11 +2,12 @@ package com.sergigonzalez.buidem.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(
-    tableName = "TypeMachines"
+    tableName = "TypeMachines",indices = [Index(value = [ "_id"], unique = true)]
 )
 data class TypeMachines(
     @PrimaryKey(autoGenerate = true)

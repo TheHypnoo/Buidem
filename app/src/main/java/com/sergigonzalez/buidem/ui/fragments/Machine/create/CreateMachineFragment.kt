@@ -1,9 +1,12 @@
 package com.sergigonzalez.buidem.ui.fragments.Machine.create
 
 import android.R
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -14,6 +17,7 @@ import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.data.TypeMachines
 import com.sergigonzalez.buidem.data.Zones
 import com.sergigonzalez.buidem.databinding.FragmentCreateMachineBinding
+import com.sergigonzalez.buidem.ui.activitys.MainActivity
 import com.sergigonzalez.buidem.ui.fragments.Machine.MachinesFragment
 import com.sergigonzalez.buidem.utils.DialogCalendar
 import com.sergigonzalez.buidem.utils.util_widgets
@@ -22,7 +26,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
-class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
+
+class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
     private var _binding: FragmentCreateMachineBinding? = null
     private val binding get() = _binding!!
     private lateinit var database: MachinesApplication
@@ -35,6 +40,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private var listTypeMachines: List<TypeMachines> = emptyList()
     private var selectedZone: String = ""
     private var selectedTypeMachine: String = ""
+    private var machine: Machines? = null
     private var utilWidgets = util_widgets()
 
     override fun onCreateView(
@@ -48,8 +54,37 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         database = MachinesApplication.getDatabase(this@CreateMachineFragment.requireContext())
+        date()
         getZones()
         getTypeMachines()
+        if (machine != null) {
+            edit()
+        } else {
+            create()
+        }
+
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        machine = arguments?.getSerializable("Machine") as Machines?
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        if (parent != null) {
+            if (parent.id == binding.spZone.id) {
+                selectedZone = listZones[position]._id.toString()
+            } else {
+                if (parent.id == binding.spTypeMachine.id) {
+                    selectedTypeMachine = listTypeMachines[position]._id.toString()
+                }
+            }
+        }
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+    fun date() {
         _year = c[Calendar.YEAR]
         _month = c[Calendar.MONTH]
         _day = c[Calendar.DAY_OF_MONTH]
@@ -73,6 +108,9 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     binding.etDateLastRevision
                 )
             }
+    }
+
+    fun create() {
         binding.fabSaveCreateMachine.setOnClickListener {
             if (Check()) {
                 util_widgets().snackbarMessage(
@@ -181,18 +219,49 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
     }
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        if (parent != null) {
-            if (parent.id == binding.spZone.id) {
-                selectedZone = listZones[position]._id.toString()
-            } else {
-                if (parent.id == binding.spTypeMachine.id) {
-                    selectedTypeMachine = listTypeMachines[position]._id.toString()
+    fun edit() {
+        binding.etNameClient.setText(machine?.nameClient)
+        binding.etSerialNumberMachine.setText(machine?.serialNumberMachine)
+        binding.etPhoneContact.setText(machine?.phoneContact)
+        binding.etEmailContact.setText(machine?.emailContact)
+        binding.etDateLastRevision.setText(machine?.lastRevisionDateMachine)
+        binding.etCodePostal.setText(machine?.postalCodeMachine)
+        binding.etTown.setText(machine?.townMachine)
+        binding.etAddress.setText(machine?.addressMachine)
+        selectedZone = machine?.zone.toString()
+        selectedTypeMachine = machine?.typeMachine.toString()
+        binding.fabSaveCreateMachine.setOnClickListener {
+            if (Check()) {
+                util_widgets().snackbarMessage(
+                    binding.root,
+                    "Se ha Actualizado correctamente la Maquina",
+                    true
+                )
+                val machine = Machines(
+                    machine!!._id,
+                    binding.etNameClient.text.toString(),
+                    binding.etAddress.text.toString(),
+                    binding.etCodePostal.text.toString(),
+                    binding.etTown.text.toString(),
+                    binding.etPhoneContact.text.toString(),
+                    binding.etEmailContact.text.toString(),
+                    binding.etSerialNumberMachine.text.toString(),
+                    date!!,
+                    selectedZone,
+                    selectedTypeMachine
+                )
+                CoroutineScope(Dispatchers.IO).launch {
+                    database.MachinesApplication().updateMachine(machine)
                 }
+                utilWidgets.replaceFragment(MachinesFragment(), requireActivity())
+            } else {
+                util_widgets().snackbarMessage(
+                    binding.root,
+                    "No puedes actualizar una maquina sin introducir nada",
+                    false
+                )
             }
         }
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-    }
 }
