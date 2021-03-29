@@ -6,6 +6,9 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,8 +41,6 @@ class MapsFragment : Fragment() {
     private var utilWidgets = util_widgets()
     private lateinit var color: String
     private var listMachines: ArrayList<Machines>? = null
-    private var listColors: ArrayList<String>? = null
-    private var listidMachines: ArrayList<Int>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,8 +58,12 @@ class MapsFragment : Fragment() {
         mMapView = binding.mvMap
         mMapView.onCreate(savedInstanceState)
         mMapView.onResume()
-
-        InitializeMap()
+        if (isNetworkAvailable()) {
+            InitializeMap()
+        } else {
+            binding.tvNoInternet.visibility = View.VISIBLE
+            binding.mvMap.visibility = View.GONE
+        }
     }
 
     private fun InitializeMap() {
@@ -69,25 +74,18 @@ class MapsFragment : Fragment() {
         }
         if (listMachines != null) {
             if (listMachines?.size!! > 0) {
-                for (machine in listMachines!!) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        listColors?.add(database.MachinesApplication()
-                            .searchColorTypeMachine(machine.typeMachine.toInt()).colorTypeMachine)
-                        listidMachines?.add(machine.typeMachine.toInt())
-                    }
+                CoroutineScope(Dispatchers.IO).launch {
+                    color = database.MachinesApplication()
+                        .searchColorTypeMachine(listMachines!![0].typeMachine.toInt()).colorTypeMachine
                 }
             }
-        }
-        if (machines != null) {
+        } else if (machines != null) {
             val idMachine = machines?.typeMachine?.toInt()
 
             CoroutineScope(Dispatchers.IO).launch {
                 color = database.MachinesApplication()
                     .searchColorTypeMachine(idMachine!!).colorTypeMachine
-                println("Prueba color: $color")
             }
-        } else {
-            color = "#FF5733"
         }
         mMapView.getMapAsync { mMap ->
             googleMap = mMap
@@ -195,6 +193,31 @@ class MapsFragment : Fragment() {
         val hsv = FloatArray(3)
         Color.colorToHSV(Color.parseColor(color), hsv)
         return BitmapDescriptorFactory.defaultMarker(hsv[0])
+    }
+
+    fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        // For 30 api or above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val capabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+                    ?: return false
+            return when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                else -> false
+            }
+        }
+        // For below 29 api
+        else {
+            if (connectivityManager.activeNetworkInfo != null && connectivityManager.activeNetworkInfo!!.isConnectedOrConnecting) {
+                return true
+            }
+        }
+        return false
     }
 
     override fun onAttach(context: Context) {

@@ -8,7 +8,18 @@
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mvMap"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/tvNoInternet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No tienes internet"
+        android:textAlignment="center"
+        android:textSize="36dp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
 </RelativeLayout>

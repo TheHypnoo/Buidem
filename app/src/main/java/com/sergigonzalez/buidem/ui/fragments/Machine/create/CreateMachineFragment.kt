@@ -2,11 +2,9 @@ package com.sergigonzalez.buidem.ui.fragments.Machine.create
 
 import android.R
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -17,7 +15,6 @@ import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.data.TypeMachines
 import com.sergigonzalez.buidem.data.Zones
 import com.sergigonzalez.buidem.databinding.FragmentCreateMachineBinding
-import com.sergigonzalez.buidem.ui.activitys.MainActivity
 import com.sergigonzalez.buidem.ui.fragments.Machine.MachinesFragment
 import com.sergigonzalez.buidem.utils.DialogCalendar
 import com.sergigonzalez.buidem.utils.util_widgets
