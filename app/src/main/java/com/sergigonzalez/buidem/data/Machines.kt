@@ -16,9 +16,9 @@ import java.io.Serializable
             parentColumns = arrayOf("_id"),
             childColumns = arrayOf("typeMachine"),
             onDelete = ForeignKey.CASCADE
-        )], indices = [Index(value = ["serialNumberMachine", "typeMachine", "zone"], unique = true)]
-    //No puedes crear mas de una maquina con su serialNumberMachine
-
+        )],
+    indices = [Index("_id", unique = true),
+        Index("serialNumberMachine", unique = true)]
 )
 
 data class Machines(
@@ -43,7 +43,7 @@ data class Machines(
     var lastRevisionDateMachine: String = "lastRevisionDateMachine",
     //ForeignKey
     @ColumnInfo(name = "typeMachine")
-    var typeMachine: String = "typeMachine",
+    var typeMachine: Int = 0,
     @ColumnInfo(name = "zone")
-    var zone: String = "zone",
+    var zone: Int = 0,
 ) : Serializable

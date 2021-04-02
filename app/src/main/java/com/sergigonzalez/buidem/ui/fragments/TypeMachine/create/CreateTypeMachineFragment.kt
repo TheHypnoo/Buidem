@@ -1,10 +1,13 @@
 package com.sergigonzalez.buidem.ui.fragments.TypeMachine.create
 
+import android.app.Activity
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
@@ -54,21 +57,31 @@ class CreateTypeMachineFragment : Fragment() {
     fun create() {
         binding.fabSaveCreateTypeMachine.setOnClickListener {
             if (binding.etNameTypeMachine.text.isEmpty()) {
+                hideKeyboard()
                 utilWidgets.snackbarMessage(
                     binding.root,
                     "No has introducido ningún nombre para el tipo de maquina",
                     false
                 )
             } else {
-                val TypeMachine = TypeMachines(
+                val typeMachine = TypeMachines(
                     0,
                     binding.etNameTypeMachine.text.toString(),
                     binding.etColorTypeMachine.text.toString(),
                 )
                 CoroutineScope(Dispatchers.IO).launch {
-                    database.MachinesApplication().insertTypeMachine(TypeMachine)
+                    try {
+                        database.MachinesApplication().insertTypeMachine(typeMachine)
+                        utilWidgets.replaceFragment(TypeMachinesFragment(), requireActivity())
+                    } catch (e: SQLiteConstraintException) {
+                        hideKeyboard()
+                        utilWidgets.snackbarMessage(
+                            binding.root,
+                            "Ya existe el nombre de ese tipo de maquina",
+                            false
+                        )
+                    }
                 }
-                utilWidgets.replaceFragment(TypeMachinesFragment(), requireActivity())
             }
         }
     }
@@ -78,15 +91,10 @@ class CreateTypeMachineFragment : Fragment() {
         binding.etColorTypeMachine.setText(typeMachines?.colorTypeMachine)
         binding.fabSaveCreateTypeMachine.setOnClickListener {
             if (binding.etNameTypeMachine.text.isEmpty()) {
+                hideKeyboard()
                 utilWidgets.snackbarMessage(
                     binding.root,
                     "No has introducido ningún nombre para el tipo de maquina",
-                    false
-                )
-            } else if (binding.etColorTypeMachine.text.isEmpty()) {
-                utilWidgets.snackbarMessage(
-                    binding.root,
-                    "No has introducido ningún color",
                     false
                 )
             } else {
@@ -96,16 +104,25 @@ class CreateTypeMachineFragment : Fragment() {
                     binding.etColorTypeMachine.text.toString(),
                 )
                 CoroutineScope(Dispatchers.IO).launch {
-                    database.MachinesApplication().updateTypeMachine(typeMachine)
+                    try {
+                        database.MachinesApplication().updateTypeMachine(typeMachine)
+                        utilWidgets.replaceFragment(TypeMachinesFragment(), requireActivity())
+                    } catch (e: SQLiteConstraintException) {
+                        hideKeyboard()
+                        utilWidgets.snackbarMessage(
+                            binding.root,
+                            "Ya existe el nombre de ese tipo de maquina",
+                            true
+                        )
+                    }
                 }
-                utilWidgets.replaceFragment(TypeMachinesFragment(), requireActivity())
             }
         }
     }
 
     fun openPickerDialog() {
         var defaultColor: Int
-        defaultColor = if(typeMachines?.colorTypeMachine?.isNotEmpty() == true) {
+        defaultColor = if (typeMachines?.colorTypeMachine?.isNotEmpty() == true) {
             typeMachines!!.colorTypeMachine.toColorInt()
         } else {
             ContextCompat.getColor(requireContext(), R.color.purple_500)
@@ -122,5 +139,14 @@ class CreateTypeMachineFragment : Fragment() {
                 }
                 .show()
         }
+    }
+
+    fun Fragment.hideKeyboard() {
+        view?.let { activity?.hideKeyboard(it) }
+    }
+
+    fun Context.hideKeyboard(view: View) {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }

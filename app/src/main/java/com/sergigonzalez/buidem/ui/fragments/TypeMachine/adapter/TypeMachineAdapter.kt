@@ -54,11 +54,16 @@ class TypeMachineAdapter(private val listTypeMachine: List<TypeMachines>) :
                 bt.setContentView(view)
                 bt.show()
             }
-            binding.tvColorTypeMachine.setBackgroundColor(Color.parseColor(TypeMachine.colorTypeMachine))
+
             binding.cvTypeMachine.animation =
                 AnimationUtils.loadAnimation(view.context, R.anim.scale_up)
             binding.tvTypeMachineItem.text = TypeMachine.nameTypeMachine
-            binding.tvColorTypeMachine.text = TypeMachine.colorTypeMachine
+            if (TypeMachine.colorTypeMachine.isNotEmpty()) {
+                binding.tvColorTypeMachine.text = TypeMachine.colorTypeMachine
+                binding.tvColorTypeMachine.setBackgroundColor(Color.parseColor(TypeMachine.colorTypeMachine))
+            } else {
+                binding.tvColorTypeMachine.text = "No Color"
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.sergigonzalez.buidem.ui.fragments.Zone.create
 
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +49,7 @@ class CreateZonesFragment : Fragment() {
     fun create() {
         binding.fabSaveCreateZone.setOnClickListener {
             if (binding.etZone.text.isEmpty()) {
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 utilWidgets.snackbarMessage(
                     binding.root,
                     "No has introducido ningún nombre para crear la zona",
@@ -59,9 +61,19 @@ class CreateZonesFragment : Fragment() {
                     binding.etZone.text.toString(),
                 )
                 CoroutineScope(Dispatchers.IO).launch {
-                    database.MachinesApplication().insertZones(zone)
+                    try {
+                        database.MachinesApplication().insertZones(zone)
+                        utilWidgets.replaceFragment(ZonesFragment(), requireActivity())
+                        activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                    } catch (e: SQLiteConstraintException) {
+                        activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                        utilWidgets.snackbarMessage(
+                            binding.root,
+                            "Ya existe ese nombre en una zona",
+                            false
+                        )
+                    }
                 }
-                utilWidgets.replaceFragment(ZonesFragment(), requireActivity())
             }
         }
     }
@@ -70,6 +82,12 @@ class CreateZonesFragment : Fragment() {
         binding.etZone.setText(zone?.nameZone)
         binding.fabSaveCreateZone.setOnClickListener {
             if (binding.etZone.text.isEmpty()) {
+                activity?.let { it1 ->
+                    util_widgets.hideKeyboard.hideSoftKeyBoard(
+                        it1.applicationContext,
+                        binding.root
+                    )
+                }
                 utilWidgets.snackbarMessage(
                     binding.root,
                     "El nombre de la zona esta vacio",
@@ -81,9 +99,29 @@ class CreateZonesFragment : Fragment() {
                     binding.etZone.text.toString(),
                 )
                 CoroutineScope(Dispatchers.IO).launch {
-                    database.MachinesApplication().updateZone(zone)
+                    try {
+                        database.MachinesApplication().updateZone(zone)
+                        utilWidgets.replaceFragment(ZonesFragment(), requireActivity())
+                        activity?.let { it1 ->
+                            util_widgets.hideKeyboard.hideSoftKeyBoard(
+                                it1.applicationContext,
+                                binding.root
+                            )
+                        }
+                    } catch (e: SQLiteConstraintException) {
+                        activity?.let { it1 ->
+                            util_widgets.hideKeyboard.hideSoftKeyBoard(
+                                it1.applicationContext,
+                                binding.root
+                            )
+                        }
+                        utilWidgets.snackbarMessage(
+                            binding.root,
+                            "Ya existe ese nombre en una zona",
+                            false
+                        )
+                    }
                 }
-                utilWidgets.replaceFragment(ZonesFragment(), requireActivity())
             }
         }
     }

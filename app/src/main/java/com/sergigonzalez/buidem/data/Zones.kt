@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(
-    tableName = "Zones",indices = [Index(value = [ "_id"], unique = true)]
+    tableName = "Zones", indices = [Index("_id", unique = true), Index("nameZone", unique = true)]
 )
 data class Zones(
     @PrimaryKey(autoGenerate = true)

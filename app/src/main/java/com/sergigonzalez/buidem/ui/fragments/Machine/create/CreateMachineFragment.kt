@@ -1,12 +1,15 @@
 package com.sergigonzalez.buidem.ui.fragments.Machine.create
 
 import android.R
+import android.app.Activity
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
@@ -24,7 +27,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 
-class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
+class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private var _binding: FragmentCreateMachineBinding? = null
     private val binding get() = _binding!!
     private lateinit var database: MachinesApplication
@@ -35,8 +38,8 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
     private var date: String? = null
     private var listZones: List<Zones> = emptyList()
     private var listTypeMachines: List<TypeMachines> = emptyList()
-    private var selectedZone: String = ""
-    private var selectedTypeMachine: String = ""
+    private var selectedZone: Int = 0
+    private var selectedTypeMachine: Int = 0
     private var machine: Machines? = null
     private var utilWidgets = util_widgets()
 
@@ -70,10 +73,10 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if (parent != null) {
             if (parent.id == binding.spZone.id) {
-                selectedZone = listZones[position]._id.toString()
+                selectedZone = listZones[position]._id
             } else {
                 if (parent.id == binding.spTypeMachine.id) {
-                    selectedTypeMachine = listTypeMachines[position]._id.toString()
+                    selectedTypeMachine = listTypeMachines[position]._id
                 }
             }
         }
@@ -110,11 +113,6 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
     fun create() {
         binding.fabSaveCreateMachine.setOnClickListener {
             if (Check()) {
-                util_widgets().snackbarMessage(
-                    binding.root,
-                    "Se ha creado correctamente la Maquina",
-                    true
-                )
                 val machine = Machines(
                     0,
                     binding.etNameClient.text.toString(),
@@ -125,14 +123,31 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
                     binding.etEmailContact.text.toString(),
                     binding.etSerialNumberMachine.text.toString(),
                     date!!,
-                    selectedZone,
-                    selectedTypeMachine
+                    selectedTypeMachine,
+                    selectedZone
                 )
+
                 CoroutineScope(Dispatchers.IO).launch {
-                    database.MachinesApplication().insertMachine(machine)
+                    try {
+                        database.MachinesApplication().insertMachine(machine)
+                        utilWidgets.replaceFragment(MachinesFragment(), requireActivity())
+                    } catch (e: SQLiteConstraintException) {
+                        hideKeyboard()
+                        util_widgets().snackbarMessage(
+                            binding.root,
+                            "Ya existe el numero de serie",
+                            false
+                        )
+                    }
                 }
-                utilWidgets.replaceFragment(MachinesFragment(), requireActivity())
+                hideKeyboard()
+                util_widgets().snackbarMessage(
+                    binding.root,
+                    "Se ha creado correctamente la Maquina",
+                    true
+                )
             } else {
+                hideKeyboard()
                 util_widgets().snackbarMessage(
                     binding.root,
                     "No puedes crear una maquina sin introducir nada",
@@ -145,6 +160,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
     fun Check(): Boolean {
         when {
             binding.etNameClient.text.isEmpty() -> {
+                hideKeyboard()
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Debes añadir un nombre al cliente",
@@ -153,6 +169,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
                 return false
             }
             binding.etSerialNumberMachine.text.isEmpty() -> {
+                hideKeyboard()
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Debes añadir un numero de serie a la maquina",
@@ -161,18 +178,22 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
                 return false
             }
             binding.etCodePostal.text.isEmpty() -> {
+                hideKeyboard()
                 util_widgets().snackbarMessage(binding.root, "Debes añadir un Codigo Postal", false)
                 return false
             }
             binding.etTown.text.isEmpty() -> {
+                hideKeyboard()
                 util_widgets().snackbarMessage(binding.root, "Debes añadir una poblacion", false)
                 return false
             }
             binding.etAddress.text.isEmpty() -> {
+                hideKeyboard()
                 util_widgets().snackbarMessage(binding.root, "Debes añadir una dirección", false)
                 return false
             }
-            selectedZone.isEmpty() -> {
+            selectedZone == 0 -> {
+                hideKeyboard()
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Debes añadir una zona antes de crear la maquina",
@@ -180,7 +201,8 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
                 )
                 return false
             }
-            selectedTypeMachine.isEmpty() -> {
+            selectedTypeMachine == 0 -> {
+                hideKeyboard()
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Debes añadir una zona antes de crear la maquina",
@@ -201,6 +223,9 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
                 it.map { zones -> zones.nameZone }
             )
             binding.spZone.onItemSelectedListener = this@CreateMachineFragment
+            if (machine != null) {
+                binding.spZone.setSelection(machine?.zone!! - 1)
+            }
         }
     }
 
@@ -213,6 +238,9 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
                 it.map { TypeMachines -> TypeMachines.nameTypeMachine }
             )
             binding.spTypeMachine.onItemSelectedListener = this@CreateMachineFragment
+            if (machine != null) {
+                binding.spTypeMachine.setSelection(machine?.typeMachine!! - 1)
+            }
         }
     }
 
@@ -225,15 +253,9 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
         binding.etCodePostal.setText(machine?.postalCodeMachine)
         binding.etTown.setText(machine?.townMachine)
         binding.etAddress.setText(machine?.addressMachine)
-        selectedZone = machine?.zone.toString()
-        selectedTypeMachine = machine?.typeMachine.toString()
+
         binding.fabSaveCreateMachine.setOnClickListener {
             if (Check()) {
-                util_widgets().snackbarMessage(
-                    binding.root,
-                    "Se ha Actualizado correctamente la Maquina",
-                    true
-                )
                 val machine = Machines(
                     machine!!._id,
                     binding.etNameClient.text.toString(),
@@ -244,14 +266,31 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
                     binding.etEmailContact.text.toString(),
                     binding.etSerialNumberMachine.text.toString(),
                     date!!,
-                    selectedZone,
-                    selectedTypeMachine
+                    selectedTypeMachine,
+                    selectedZone
                 )
+
                 CoroutineScope(Dispatchers.IO).launch {
-                    database.MachinesApplication().updateMachine(machine)
+                    try {
+                        database.MachinesApplication().updateMachine(machine)
+                        utilWidgets.replaceFragment(MachinesFragment(), requireActivity())
+                    } catch (e: SQLiteConstraintException) {
+                        hideKeyboard()
+                        util_widgets().snackbarMessage(
+                            binding.root,
+                            "Ya existe el numero de serie",
+                            false
+                        )
+                    }
                 }
-                utilWidgets.replaceFragment(MachinesFragment(), requireActivity())
+                hideKeyboard()
+                util_widgets().snackbarMessage(
+                    binding.root,
+                    "Se ha Actualizado correctamente la Maquina",
+                    true
+                )
             } else {
+                hideKeyboard()
                 util_widgets().snackbarMessage(
                     binding.root,
                     "No puedes actualizar una maquina sin introducir nada",
@@ -259,6 +298,16 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener{
                 )
             }
         }
+    }
+
+    fun Fragment.hideKeyboard() {
+        view?.let { activity?.hideKeyboard(it) }
+    }
+
+    fun Context.hideKeyboard(view: View) {
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 }

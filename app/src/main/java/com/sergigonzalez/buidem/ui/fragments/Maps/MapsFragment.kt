@@ -10,6 +10,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.model.*
 import com.sergigonzalez.buidem.data.Machines
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.databinding.FragmentMapsBinding
+import com.sergigonzalez.buidem.ui.fragments.weather.WeatherFragment
 import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,10 +39,14 @@ class MapsFragment : Fragment() {
     lateinit var mMapView: MapView
     private lateinit var googleMap: GoogleMap
     private var machines: Machines? = null
-    private var ZoomToAddress = 15
+    private var zoomToAddress = 15
     private var utilWidgets = util_widgets()
     private lateinit var color: String
-    private var listMachines: ArrayList<Machines>? = null
+    private var listMachines: ArrayList<Machines>? = arrayListOf()
+    private var listColors: ArrayList<String> = arrayListOf()
+    private var listMachineID: ArrayList<Int> = arrayListOf()
+    private var contador = 0
+    private var weatherFragment = WeatherFragment()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,12 +59,15 @@ class MapsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = "Maps"
-        println("Acabo de entrar al Maps")
         database = MachinesApplication.getDatabase(this@MapsFragment.requireActivity())
+        if(machines != null) {
+            activity?.let { weatherFragment.Search(machines!!.townMachine, it) }
+        }
         mMapView = binding.mvMap
         mMapView.onCreate(savedInstanceState)
         mMapView.onResume()
         if (isNetworkAvailable()) {
+            getColors()
             InitializeMap()
         } else {
             binding.tvNoInternet.visibility = View.VISIBLE
@@ -72,79 +81,11 @@ class MapsFragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        if (listMachines != null) {
-            if (listMachines?.size!! > 0) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    color = database.MachinesApplication()
-                        .searchColorTypeMachine(listMachines!![0].typeMachine.toInt()).colorTypeMachine
-                }
-            }
-        } else if (machines != null) {
-            val idMachine = machines?.typeMachine?.toInt()
-
-            CoroutineScope(Dispatchers.IO).launch {
-                color = database.MachinesApplication()
-                    .searchColorTypeMachine(idMachine!!).colorTypeMachine
-            }
-        }
         mMapView.getMapAsync { mMap ->
             googleMap = mMap
             ApplyPermissions()
-            if (machines != null) {
-                val _mark: LatLng? = getLocationFromAddress(
-                    machines!!.addressMachine + " " + machines!!.townMachine + " " + machines!!.postalCodeMachine
-                )
-                if (_mark != null) {
-                    googleMap.addMarker(
-                        MarkerOptions().position(_mark).title(machines!!.nameClient).snippet(
-                            machines!!.addressMachine + ", " + machines!!.townMachine + ", " + machines!!.postalCodeMachine
-                        ).draggable(true).icon(
-                            getMarkerIcon(
-                                color
-                            )
-                        )
-                    )
-                    val cameraPosition =
-                        CameraPosition.Builder().target(_mark).zoom(ZoomToAddress.toFloat()).build()
-                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-                } else {
-                    utilWidgets.snackbarMessage(binding.root, "Dirección no encontrada", false)
-                }
-            }
-            if (listMachines != null) {
-                if (listMachines?.size!! > 0) {
-                    for (machine in listMachines!!) {
-                        val _mark = getLocationFromAddress(
-                            machine.addressMachine + " " + machine.townMachine + " " + machine.postalCodeMachine
-                        )
-
-                        if (_mark != null) {
-                            googleMap.addMarker(
-                                MarkerOptions().position(_mark).title(machine.nameClient)
-                                    .snippet(
-                                        machine.addressMachine + ", " + machine.townMachine + ", " + machine.postalCodeMachine
-                                    ).draggable(true).icon(
-                                        getMarkerIcon(
-                                            color
-                                        )
-                                    )
-                            )
-
-                            val cameraPosition =
-                                CameraPosition.Builder().target(_mark).zoom(5f).build()
-                            googleMap.animateCamera(
-                                CameraUpdateFactory.newCameraPosition(
-                                    cameraPosition
-                                )
-                            )
-                        }
-                    }
-                } else {
-                    utilWidgets.snackbarMessage(binding.root, "No hay maquinas en la zona", false)
-                }
-            }
+            markers()
         }
-
     }
 
     private fun getLocationFromAddress(_AddressOrZone: String): LatLng? {
@@ -218,6 +159,92 @@ class MapsFragment : Fragment() {
             }
         }
         return false
+    }
+
+    fun getColors() {
+        if (listMachines != null) {
+            if (listMachines?.size!! > 0) {
+                for (i in listMachines!!.indices) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        color = database.MachinesApplication()
+                            .searchColorTypeMachine(listMachines!![i].typeMachine).colorTypeMachine
+                    }.invokeOnCompletion {
+                        listColors.add(color)
+                        listMachineID.add(listMachines!![i]._id)
+                    }
+                }
+            }
+        } else if (machines != null) {
+            val idMachine = machines?.typeMachine
+
+            CoroutineScope(Dispatchers.IO).launch {
+                color = database.MachinesApplication()
+                    .searchColorTypeMachine(idMachine!!).colorTypeMachine
+            }
+        }
+    }
+
+    fun markers() {
+        if (machines != null) {
+            val _mark: LatLng? = getLocationFromAddress(
+                machines!!.addressMachine + " " + machines!!.townMachine + " " + machines!!.postalCodeMachine
+            )
+            if (_mark != null) {
+                googleMap.addMarker(
+                    MarkerOptions().position(_mark).title(machines!!.nameClient).snippet(
+                        machines!!.addressMachine + ", " + machines!!.townMachine + ", " + machines!!.postalCodeMachine
+                    ).draggable(true).icon(
+                        getMarkerIcon(
+                            color
+                        )
+                    )
+                )
+                val cameraPosition =
+                    CameraPosition.Builder().target(_mark).zoom(zoomToAddress.toFloat())
+                        .build()
+                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+            } else {
+                utilWidgets.snackbarMessage(binding.root, "Dirección no encontrada", false)
+            }
+        }
+        if (listMachines != null) {
+            if (listMachines?.size!! > 0) {
+                for (machine in listMachines!!) {
+                    val _mark = getLocationFromAddress(
+                        machine.addressMachine + " " + machine.townMachine + " " + machine.postalCodeMachine
+                    )
+
+                    if (_mark != null) {
+                        if (machine._id == listMachineID[contador]) {
+                            googleMap.addMarker(
+                                MarkerOptions().position(_mark).title(machine.nameClient)
+                                    .snippet(
+                                        machine.addressMachine + ", " + machine.townMachine + ", " + machine.postalCodeMachine
+                                    ).draggable(true).icon(
+                                        getMarkerIcon(
+                                            listColors[contador]
+                                        )
+                                    )
+                            )
+                        }
+                        val cameraPosition =
+                            CameraPosition.Builder().target(_mark).zoom(10f).build()
+                        googleMap.animateCamera(
+                            CameraUpdateFactory.newCameraPosition(
+                                cameraPosition
+                            )
+                        )
+                    }
+                    ++contador
+                }
+            } else {
+                utilWidgets.snackbarMessage(
+                    binding.root,
+                    "No hay maquinas en la zona",
+                    false
+                )
+            }
+        }
     }
 
     override fun onAttach(context: Context) {

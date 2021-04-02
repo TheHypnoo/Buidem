@@ -50,6 +50,7 @@ class MachineAdapter(private val listMachines: List<Machines>) :
                             Uri.parse("tel: ${Machine.phoneContact}")
                         )
                     )
+
                     bt.dismiss()
                 }
                 view.findViewById<View>(R.id.llEmail).setOnClickListener {
@@ -107,6 +108,8 @@ class MachineAdapter(private val listMachines: List<Machines>) :
             binding.tvSerialNumberMachineItem.text = Machine.serialNumberMachine
             binding.tvDateLastRevisionItem.text = Machine.lastRevisionDateMachine
         }
+
+
     }
 
 }
