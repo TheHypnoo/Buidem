@@ -23,7 +23,7 @@ class util_widgets {
     fun replaceFragment(fragment: Fragment, activity: FragmentActivity) {
         val transaction = activity.supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
+        //transaction.addToBackStack(null)
         transaction.commit()
     }
 

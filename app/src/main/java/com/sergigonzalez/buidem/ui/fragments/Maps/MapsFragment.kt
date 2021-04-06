@@ -10,7 +10,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.os.StrictMode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,7 +45,6 @@ class MapsFragment : Fragment() {
     private var listColors: ArrayList<String> = arrayListOf()
     private var listMachineID: ArrayList<Int> = arrayListOf()
     private var contador = 0
-    private var weatherFragment = WeatherFragment()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,22 +58,32 @@ class MapsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activity?.title = "Maps"
         database = MachinesApplication.getDatabase(this@MapsFragment.requireActivity())
-        if(machines != null) {
-            activity?.let { weatherFragment.Search(machines!!.townMachine, it) }
-        }
         mMapView = binding.mvMap
         mMapView.onCreate(savedInstanceState)
         mMapView.onResume()
         if (isNetworkAvailable()) {
-            getColors()
-            InitializeMap()
+            val fragmentWeather =
+                childFragmentManager.findFragmentByTag("fragWeather") as? WeatherFragment
+                    ?: return
+            fragmentWeather.view?.visibility = View.GONE
+            getColors().runCatching { startMap() }.runCatching {
+                if (machines != null) {
+                    activity?.let { fragmentWeather.Search(machines!!.townMachine, it) }
+                        .runCatching { fragmentWeather.view?.visibility = View.VISIBLE }
+                } else if (listMachines != null && listMachines!!.size > 0) {
+                    activity?.let { fragmentWeather.Search(listMachines!![0].townMachine, it) }
+                        .runCatching { fragmentWeather.view?.visibility = View.VISIBLE }
+                } else {
+                    fragmentWeather.view?.visibility = View.GONE
+                }
+            }
         } else {
             binding.tvNoInternet.visibility = View.VISIBLE
             binding.mvMap.visibility = View.GONE
         }
     }
 
-    private fun InitializeMap() {
+    private fun startMap() {
         try {
             MapsInitializer.initialize(activity?.applicationContext)
         } catch (e: Exception) {
@@ -83,19 +91,20 @@ class MapsFragment : Fragment() {
         }
         mMapView.getMapAsync { mMap ->
             googleMap = mMap
-            ApplyPermissions()
+            applyPermissions()
             markers()
         }
     }
 
-    private fun getLocationFromAddress(_AddressOrZone: String): LatLng? {
+    private fun getLocationFromAddress(_AddressOrZone: String): LatLng {
         val coder = Geocoder(activity)
         val address: List<Address>
-        var _lanlat: LatLng? = null
+        var _lanlat: LatLng
         try {
             address = coder.getFromLocationName(_AddressOrZone, 5)
             if (address.isEmpty()) {
-                return null
+                utilWidgets.snackbarMessage(binding.root, "La dirección esta vacia", false)
+                return LatLng(0.0, 0.0)
             }
             val location = address[0]
             location.latitude
@@ -113,7 +122,7 @@ class MapsFragment : Fragment() {
         return _lanlat
     }
 
-    private fun ApplyPermissions() {
+    private fun applyPermissions() {
         if (ContextCompat.checkSelfPermission(
                 activity!!,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -136,7 +145,7 @@ class MapsFragment : Fragment() {
         return BitmapDescriptorFactory.defaultMarker(hsv[0])
     }
 
-    fun isNetworkAvailable(): Boolean {
+    private fun isNetworkAvailable(): Boolean {
         val connectivityManager =
             activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -161,7 +170,7 @@ class MapsFragment : Fragment() {
         return false
     }
 
-    fun getColors() {
+    private fun getColors() {
         if (listMachines != null) {
             if (listMachines?.size!! > 0) {
                 for (i in listMachines!!.indices) {
@@ -184,57 +193,51 @@ class MapsFragment : Fragment() {
         }
     }
 
-    fun markers() {
+    private fun markers() {
         if (machines != null) {
-            val _mark: LatLng? = getLocationFromAddress(
+            val marker: LatLng = getLocationFromAddress(
                 machines!!.addressMachine + " " + machines!!.townMachine + " " + machines!!.postalCodeMachine
             )
-            if (_mark != null) {
-                googleMap.addMarker(
-                    MarkerOptions().position(_mark).title(machines!!.nameClient).snippet(
-                        machines!!.addressMachine + ", " + machines!!.townMachine + ", " + machines!!.postalCodeMachine
-                    ).draggable(true).icon(
-                        getMarkerIcon(
-                            color
-                        )
+            googleMap.addMarker(
+                MarkerOptions().position(marker).title(machines!!.nameClient).snippet(
+                    machines!!.addressMachine + ", " + machines!!.townMachine + ", " + machines!!.postalCodeMachine
+                ).draggable(true).icon(
+                    getMarkerIcon(
+                        color
                     )
                 )
-                val cameraPosition =
-                    CameraPosition.Builder().target(_mark).zoom(zoomToAddress.toFloat())
-                        .build()
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-            } else {
-                utilWidgets.snackbarMessage(binding.root, "Dirección no encontrada", false)
-            }
-        }
-        if (listMachines != null) {
+            )
+            val cameraPosition =
+                CameraPosition.Builder().target(marker).zoom(zoomToAddress.toFloat())
+                    .build()
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        } else if (listMachines != null) {
+            println("Maquinas: ${listMachines!!.size}")
             if (listMachines?.size!! > 0) {
                 for (machine in listMachines!!) {
-                    val _mark = getLocationFromAddress(
+                    val marker = getLocationFromAddress(
                         machine.addressMachine + " " + machine.townMachine + " " + machine.postalCodeMachine
                     )
 
-                    if (_mark != null) {
-                        if (machine._id == listMachineID[contador]) {
-                            googleMap.addMarker(
-                                MarkerOptions().position(_mark).title(machine.nameClient)
-                                    .snippet(
-                                        machine.addressMachine + ", " + machine.townMachine + ", " + machine.postalCodeMachine
-                                    ).draggable(true).icon(
-                                        getMarkerIcon(
-                                            listColors[contador]
-                                        )
+                    if (machine._id == listMachineID[contador]) {
+                        googleMap.addMarker(
+                            MarkerOptions().position(marker).title(machine.nameClient)
+                                .snippet(
+                                    machine.addressMachine + ", " + machine.townMachine + ", " + machine.postalCodeMachine
+                                ).draggable(true).icon(
+                                    getMarkerIcon(
+                                        listColors[contador]
                                     )
-                            )
-                        }
-                        val cameraPosition =
-                            CameraPosition.Builder().target(_mark).zoom(10f).build()
-                        googleMap.animateCamera(
-                            CameraUpdateFactory.newCameraPosition(
-                                cameraPosition
-                            )
+                                )
                         )
                     }
+                    val cameraPosition =
+                        CameraPosition.Builder().target(marker).zoom(10f).build()
+                    googleMap.animateCamera(
+                        CameraUpdateFactory.newCameraPosition(
+                            cameraPosition
+                        )
+                    )
                     ++contador
                 }
             } else {

@@ -3,20 +3,20 @@ package com.sergigonzalez.buidem.ui.fragments.weather
 import android.app.ProgressDialog
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.opengl.Visibility
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.sergigonzalez.buidem.R
 import com.sergigonzalez.buidem.data.model.Weather
 import com.sergigonzalez.buidem.databinding.FragmentWeatherBinding
 import com.sergigonzalez.buidem.utils.Service
 import com.sergigonzalez.buidem.utils.util_widgets
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,22 +32,7 @@ class WeatherFragment : Fragment() {
     val API_ID = "5ab85ccd70b8d88070aa1c166d5006bd"
     val LANG = "es"
 
-    private val _temp = 0
-    private val _tempMax = 0
-    private val _tempMin = 0
     private var city: String? = null
-    private val urlIcon: String? = null
-
-    private val _weather: JSONObject? = null
-
-    private val root: View? = null
-
-    private val tvTemp: TextView? = null
-    private val tvTempMax: TextView? = null
-    private val tvTempMin: TextView? = null
-    private val tvCity: TextView? = null
-
-    private val imgIcon: ImageView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,8 +46,7 @@ class WeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-
-
+        visibility(false)
     }
 
     fun Search(city: String, activity: FragmentActivity) {
@@ -104,7 +88,7 @@ class WeatherFragment : Fragment() {
                 val cityList = response.body()
 
                 if (cityList != null) {
-/*
+
                     binding.tvNameCity.text = "Tiempo actual en ${cityList.name}"
                     binding.tvTempmax.text =
                         "${utilWidgets.convertFahreheit(cityList.main.tempMax).toInt()} º"
@@ -112,7 +96,7 @@ class WeatherFragment : Fragment() {
                         "${utilWidgets.convertFahreheit(cityList.main.tempMin).toInt()} º"
 
                     binding.tvTempNormal.text =
-                        "${utilWidgets.convertFahreheit(cityList.main.temp).toInt()} º"*/
+                        "${utilWidgets.convertFahreheit(cityList.main.temp).toInt()} º"
                     /*
                     binding.tvWeather.text = cityList.weather[0].description
 
@@ -125,18 +109,27 @@ class WeatherFragment : Fragment() {
                     val uri =
                         URL("https://openweathermap.org/img/wn/" + cityList.weather[0].icon + "@2x.png")
                     val bmp = BitmapFactory.decodeStream(uri.openConnection().getInputStream())
-                    //binding.imgIcon.setImageBitmap(bmp)
+                    binding.imgIcon.setImageBitmap(bmp)
                     //binding.edtCiudad.text = Editable.Factory.getInstance().newEditable("")
-                    //visibility(View.VISIBLE)
+
                     Dialog.hide()
                 }
             }
-        })
+        }).runCatching { visibility(true) }
+
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         city = arguments?.getString("City")
+    }
+
+    private fun visibility(visible: Boolean) {
+        if(visible) {
+            binding.CLWeather.visibility = View.VISIBLE
+        } else {
+            binding.CLWeather.visibility = View.GONE
+        }
     }
 
 }

@@ -49,19 +49,21 @@ class MachinesFragment : Fragment() {
             )
         }
         assignAdapter()
-        getAllMachines()
+        getAllMachines(true)
 
     }
 
-    private fun getAllMachines() {
+    private fun getAllMachines(divider: Boolean?) {
         database.MachinesApplication().getAllMachines().observe(viewLifecycleOwner) {
             listMachines = it
-            binding.rvMachines.addItemDecoration(
-                DividerItemDecoration(
-                    this@MachinesFragment.context,
-                    DividerItemDecoration.VERTICAL
+            if (divider!!) {
+                binding.rvMachines.addItemDecoration(
+                    DividerItemDecoration(
+                        this@MachinesFragment.context,
+                        DividerItemDecoration.VERTICAL
+                    )
                 )
-            )
+            }
             val itemTouchCallback = object :
                 ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
                 override fun onMove(
@@ -115,12 +117,6 @@ class MachinesFragment : Fragment() {
         database.MachinesApplication().searchSerialNumberMachine(query)
             .observe(viewLifecycleOwner) {
                 listMachines = it
-                binding.rvMachines.addItemDecoration(
-                    DividerItemDecoration(
-                        this@MachinesFragment.context,
-                        DividerItemDecoration.VERTICAL
-                    )
-                )
                 val itemTouchCallback = object :
                     ItemTouchHelper.SimpleCallback(
                         0,
@@ -196,14 +192,14 @@ class MachinesFragment : Fragment() {
         )
         alert.setSingleChoiceItems(
             sorts, singlePosition
-        ) { dialog, which -> singlePosition = which }
+        ) { _, which -> singlePosition = which }
         alert.setPositiveButton(
             android.R.string.ok
-        ) { dialog, which -> selectOrder() }
+        ) { _, _ -> selectOrder() }
         alert.setNegativeButton(android.R.string.cancel, null)
         alert.setNeutralButton(
             "Restart"
-        ) { dialog, which ->
+        ) { _, _ ->
             singlePosition = 10
             selectOrder()
         }
@@ -349,7 +345,7 @@ class MachinesFragment : Fragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 if (newText == "") {
-                    getAllMachines()
+                    getAllMachines(false)
                 }
                 return false
             }

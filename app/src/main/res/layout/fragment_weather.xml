@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="300dp"
     android:background="#409F9F9F"
+    android:id="@+id/CLWeather"
     tools:context=".ui.fragments.weather.WeatherFragment">
 
     <androidx.constraintlayout.widget.Guideline

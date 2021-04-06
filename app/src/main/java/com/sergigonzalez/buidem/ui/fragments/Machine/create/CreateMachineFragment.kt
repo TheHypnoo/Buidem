@@ -1,6 +1,6 @@
 package com.sergigonzalez.buidem.ui.fragments.Machine.create
 
-import android.R
+
 import android.app.Activity
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
@@ -73,10 +73,12 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         if (parent != null) {
             if (parent.id == binding.spZone.id) {
-                selectedZone = listZones[position]._id
+                if (listZones.isNotEmpty()) selectedZone =
+                    listZones[position]._id
             } else {
                 if (parent.id == binding.spTypeMachine.id) {
-                    selectedTypeMachine = listTypeMachines[position]._id
+                    if (listTypeMachines.isNotEmpty()) selectedTypeMachine =
+                        listTypeMachines[position]._id
                 }
             }
         }
@@ -146,13 +148,6 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     "Se ha creado correctamente la Maquina",
                     true
                 )
-            } else {
-                hideKeyboard()
-                util_widgets().snackbarMessage(
-                    binding.root,
-                    "No puedes crear una maquina sin introducir nada",
-                    false
-                )
             }
         }
     }
@@ -217,15 +212,29 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     fun getZones() {
         database.MachinesApplication().getAllZones().observe(viewLifecycleOwner) {
             listZones = it
-            binding.spZone.adapter = ArrayAdapter(
-                this@CreateMachineFragment.requireContext(),
-                R.layout.simple_spinner_item,
-                it.map { zones -> zones.nameZone }
-            )
-            binding.spZone.onItemSelectedListener = this@CreateMachineFragment
-            if (machine != null) {
-                binding.spZone.setSelection(machine?.zone!! - 1)
-            }
+            if (it.isNotEmpty()) {
+                binding.spZone.adapter = ArrayAdapter(
+                    this@CreateMachineFragment.requireContext(),
+                    android.R.layout.simple_spinner_item,
+                    it.map { zones -> zones.nameZone }
+                )
+                binding.spZone.onItemSelectedListener = this@CreateMachineFragment
+                if (machine != null) {
+                    binding.spZone.setSelection(machine?.zone!! - 1)
+                }
+            }/* else {
+                var lista: List<String> = listOf("No hay ningúna zona")
+                binding.spZone.adapter = ArrayAdapter(
+                    this@CreateMachineFragment.requireContext(),
+                    android.R.layout.simple_spinner_item,
+                    lista
+                )
+                binding.spZone.onItemSelectedListener = this@CreateMachineFragment
+                if (machine != null) {
+                    binding.spZone.setSelection(machine?.zone!! - 1)
+                }
+            }*/
+
         }
     }
 
@@ -234,7 +243,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
             listTypeMachines = it
             binding.spTypeMachine.adapter = ArrayAdapter(
                 this@CreateMachineFragment.requireContext(),
-                R.layout.simple_spinner_item,
+                android.R.layout.simple_spinner_item,
                 it.map { TypeMachines -> TypeMachines.nameTypeMachine }
             )
             binding.spTypeMachine.onItemSelectedListener = this@CreateMachineFragment
