@@ -16,29 +16,37 @@
         android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView"
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@id/text_layout_create_name_zone"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Zona"
-            android:textSize="22sp" />
+            android:layout_marginTop="8dp"
+            android:hint="Ingresa la zona"
+            app:boxStrokeColor="#31AF1C"
+            app:endIconTint="#31AF1C"
+            app:hintTextColor="#31AF1C"
+            app:startIconTint="#31AF1C">
 
-        <EditText
-            android:id="@+id/etZone"
-            android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextZone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/btn_create_zone"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName" />
-
-
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/fabSaveCreateZone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:gravity="center"
-            android:text="Save"
-            app:icon="@drawable/ic_add" />
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/custom_button"
+            android:text="Crear Zona"
+            android:textAlignment="center" />
 
     </LinearLayout>
 

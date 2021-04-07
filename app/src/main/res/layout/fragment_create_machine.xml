@@ -11,167 +11,165 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <!--Nombre del Cliente-->
-        <TextView
-            android:id="@+id/tvNameClient"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Nombre del Cliente" />
-
-        <EditText
-            android:id="@+id/etNameClient"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Introduce el nombre del cliente" />
-
-        <Space
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@id/text_layout_create_nameClient_Machine"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_gravity="center" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Nombre del cliente"
+            app:boxStrokeColor="#31AF1C"
+            app:endIconTint="#31AF1C"
+            app:hintTextColor="#31AF1C"
+            app:startIconTint="#31AF1C">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNameClient"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!--Numero de serie de la maquina-->
-        <TextView
-            android:id="@+id/tvSerialNumberMachine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Numero de Serie" />
-
-        <EditText
-            android:id="@+id/etSerialNumberMachine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Introduce el numero de serie" />
-
-        <Space
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@id/text_layout_create_SerialNumberMachine_Machine"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_gravity="center" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Numero de Serie de la maquina"
+            app:boxStrokeColor="#31AF1C"
+            app:endIconTint="#31AF1C"
+            app:hintTextColor="#31AF1C"
+            app:startIconTint="#31AF1C">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSerialNumberMachine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!--Telefono de contacto-->
-        <TextView
-            android:id="@+id/tvPhoneContact"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Telefono de contacto" />
-
-        <EditText
-            android:id="@+id/etPhoneContact"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Introduce el numero de telefono" />
-
-        <Space
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@id/text_layout_create_phoneContact_Machine"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_gravity="center" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Numero de telefono"
+            app:boxStrokeColor="#31AF1C"
+            app:endIconTint="#31AF1C"
+            app:hintTextColor="#31AF1C"
+            app:startIconTint="#31AF1C">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPhoneContact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <!--Email de Contacto-->
-        <TextView
-            android:id="@+id/tvEmailContact"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Email" />
-
-        <EditText
-            android:id="@+id/etEmailContact"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Introduce el email" />
-
-        <Space
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@id/text_layout_create_email_Machine"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_gravity="center" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Email de contacto"
+            app:boxStrokeColor="#31AF1C"
+            app:endIconTint="#31AF1C"
+            app:hintTextColor="#31AF1C"
+            app:startIconTint="#31AF1C">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEmailContact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!--Fecha de la ultima revisión-->
-        <TextView
-            android:id="@+id/tvDateLastRevision"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Fecha de la ultima revisión" />
-
-        <EditText
-            android:id="@+id/etDateLastRevision"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Click Fecha de la ultima revisión"
-            android:inputType="date" />
-
-        <Space
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@id/text_layout_create_dateLastRevision_Machine"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_gravity="center" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Fecha"
+            app:boxStrokeColor="#31AF1C"
+            app:endIconTint="#31AF1C"
+            app:hintTextColor="#31AF1C"
+            app:startIconTint="#31AF1C">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDateLastRevision"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!--Codigo Postal-->
-        <TextView
-            android:id="@+id/tvCodePostal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Codigo Postal" />
-
-        <EditText
-            android:id="@+id/etCodePostal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Introduce el codigo postal" />
-
-        <Space
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@id/text_layout_create_codePostal_Machine"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_gravity="center" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Codigo Postal"
+            app:boxStrokeColor="#31AF1C"
+            app:endIconTint="#31AF1C"
+            app:hintTextColor="#31AF1C"
+            app:startIconTint="#31AF1C">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCodePostal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPostalAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!--Town-->
-        <TextView
-            android:id="@+id/tvTown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Poblacion" />
-
-        <EditText
-            android:id="@+id/etTown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Introduce la Poblacion"
-            android:inputType="text" />
-
-        <Space
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@id/text_layout_create_town_Machine"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_marginTop="8dp"
+            android:hint="Poblacion"
+            app:boxStrokeColor="#31AF1C"
+            app:endIconTint="#31AF1C"
+            app:hintTextColor="#31AF1C"
+            app:startIconTint="#31AF1C">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPostalAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!--Address-->
-        <TextView
-            android:id="@+id/tvAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Dirección" />
-
-        <EditText
-            android:id="@+id/etAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Introduce la dirección"
-            android:inputType="text" />
-
-        <Space
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@id/text_layout_create_address_Machine"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_marginTop="8dp"
+            android:hint="Direccion"
+            app:boxStrokeColor="#31AF1C"
+            app:endIconTint="#31AF1C"
+            app:hintTextColor="#31AF1C"
+            app:startIconTint="#31AF1C">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPostalAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!--Zone-->
         <Spinner
@@ -192,14 +190,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/fabSaveCreateMachine"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btn_create_Machine"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:gravity="center"
-            android:text="Save"
-            app:icon="@drawable/ic_add" />
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/custom_button"
+            android:text="Create Machine"
+            android:textAlignment="center" />
     </LinearLayout>
 
 </ScrollView>

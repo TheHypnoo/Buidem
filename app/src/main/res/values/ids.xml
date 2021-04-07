@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Zone Create-->
+    <item name="text_layout_create_name_zone" type="id"/>
+    <!--Type Machine Create-->
+    <item name="text_layout_create_name_typeMachine" type="id"/>
+    <!--Machine Create-->
+    <item name="text_layout_create_nameClient_Machine" type="id"/>
+    <item name="text_layout_create_SerialNumberMachine_Machine" type="id"/>
+    <item name="text_layout_create_phoneContact_Machine" type="id"/>
+    <item name="text_layout_create_email_Machine" type="id"/>
+    <item name="text_layout_create_dateLastRevision_Machine" type="id"/>
+    <item name="text_layout_create_codePostal_Machine" type="id"/>
+    <item name="text_layout_create_town_Machine" type="id"/>
+    <item name="text_layout_create_address_Machine" type="id"/>
+</resources>

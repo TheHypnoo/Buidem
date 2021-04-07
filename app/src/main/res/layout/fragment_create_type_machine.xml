@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="?actionBarSize"
     tools:context=".ui.fragments.TypeMachine.TypeMachinesFragment">
 
@@ -16,50 +16,59 @@
         android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@id/text_layout_create_name_typeMachine"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Escribe un nombre para el tipo de maquina"
+            app:boxStrokeColor="#31AF1C"
+            app:endIconTint="#31AF1C"
+            app:hintTextColor="#31AF1C"
+            app:startIconTint="#31AF1C">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextTypeMachine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+        <ImageView
+            android:id="@+id/select_color"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/ic_select_color" />
+
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nombre del tipo de Maquina"
-            android:textSize="22sp" />
-
-        <EditText
-            android:id="@+id/etNameTypeMachine"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Color"
-            android:textSize="22sp" />
-
-        <EditText
-            android:id="@+id/etColorTypeMachine"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:focusable="false"
-            android:hint="Clica para seleccionar un color"
-            android:inputType="textPersonName" />
-
-        <TextView
-            android:id="@+id/tvShowColorSelected"
-            android:layout_width="match_parent"
-            android:layout_height="47dp"
-            android:layout_marginTop="10dp" />
-
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/fabSaveCreateTypeMachine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:id="@+id/color_background"
+            android:layout_width="150dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="50dp"
             android:gravity="center"
-            android:text="Save"
-            app:icon="@drawable/ic_add" />
+            android:textSize="18dp"
+            android:hint="Color"/>
+
+    </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_create_typeMachine"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/custom_button"
+            android:text="Crear Tipo de Maquina"
+            android:textAlignment="center" />
 
     </LinearLayout>
 

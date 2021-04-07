@@ -60,7 +60,7 @@ class TypeMachineAdapter(private val listTypeMachine: List<TypeMachines>) :
             binding.tvTypeMachineItem.text = TypeMachine.nameTypeMachine
             if (TypeMachine.colorTypeMachine.isNotEmpty()) {
                 binding.tvColorTypeMachine.text = TypeMachine.colorTypeMachine
-                binding.tvColorTypeMachine.setBackgroundColor(Color.parseColor(TypeMachine.colorTypeMachine))
+                binding.tvColorTypeMachine.setTextColor(Color.parseColor(TypeMachine.colorTypeMachine))
             } else {
                 binding.tvColorTypeMachine.text = "No Color"
             }

@@ -55,8 +55,8 @@ class CreateTypeMachineFragment : Fragment() {
     }
 
     fun create() {
-        binding.fabSaveCreateTypeMachine.setOnClickListener {
-            if (binding.etNameTypeMachine.text.isEmpty()) {
+        binding.btnCreateTypeMachine.setOnClickListener {
+            if (binding.editTextTypeMachine.text?.isEmpty() == true) {
                 hideKeyboard()
                 utilWidgets.snackbarMessage(
                     binding.root,
@@ -66,8 +66,8 @@ class CreateTypeMachineFragment : Fragment() {
             } else {
                 val typeMachine = TypeMachines(
                     0,
-                    binding.etNameTypeMachine.text.toString(),
-                    binding.etColorTypeMachine.text.toString(),
+                    binding.editTextTypeMachine.text.toString(),
+                    binding.colorBackground.text.toString(),
                 )
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
@@ -87,10 +87,11 @@ class CreateTypeMachineFragment : Fragment() {
     }
 
     fun edit() {
-        binding.etNameTypeMachine.setText(typeMachines?.nameTypeMachine)
-        binding.etColorTypeMachine.setText(typeMachines?.colorTypeMachine)
-        binding.fabSaveCreateTypeMachine.setOnClickListener {
-            if (binding.etNameTypeMachine.text.isEmpty()) {
+        binding.editTextTypeMachine.setText(typeMachines?.nameTypeMachine)
+        binding.colorBackground.setBackgroundColor(typeMachines?.colorTypeMachine!!.toColorInt())
+        binding.colorBackground.text = typeMachines!!.colorTypeMachine
+        binding.btnCreateTypeMachine.setOnClickListener {
+            if (binding.editTextTypeMachine.text?.isEmpty() == true) {
                 hideKeyboard()
                 utilWidgets.snackbarMessage(
                     binding.root,
@@ -100,8 +101,8 @@ class CreateTypeMachineFragment : Fragment() {
             } else {
                 val typeMachine = TypeMachines(
                     typeMachines!!._id,
-                    binding.etNameTypeMachine.text.toString(),
-                    binding.etColorTypeMachine.text.toString(),
+                    binding.editTextTypeMachine.text.toString(),
+                    binding.colorBackground.text.toString(),
                 )
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
@@ -127,7 +128,7 @@ class CreateTypeMachineFragment : Fragment() {
         } else {
             ContextCompat.getColor(requireContext(), R.color.purple_500)
         }
-        binding.etColorTypeMachine.setOnClickListener {
+        binding.selectColor.setOnClickListener {
             ColorPickerDialog
                 .Builder(requireActivity())
                 .setTitle("Pick Color")
@@ -135,7 +136,8 @@ class CreateTypeMachineFragment : Fragment() {
                 .setDefaultColor(defaultColor)
                 .setColorListener { color, colorHex ->
                     defaultColor = color
-                    binding.etColorTypeMachine.setText(colorHex)
+                    binding.colorBackground.setBackgroundColor(color)
+                    binding.colorBackground.text = colorHex
                 }
                 .show()
         }

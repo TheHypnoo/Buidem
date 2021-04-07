@@ -101,7 +101,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
             _day.toString() + "/" + (_month + 1) + "/" + _year
         }
 
-        binding.etDateLastRevision.text.append(date)
+        binding.etDateLastRevision.text?.append(date)
         binding.etDateLastRevision.inputType = InputType.TYPE_NULL
         binding.etDateLastRevision
             .setOnClickListener { v ->
@@ -113,7 +113,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     fun create() {
-        binding.fabSaveCreateMachine.setOnClickListener {
+        binding.btnCreateMachine.setOnClickListener {
             if (Check()) {
                 val machine = Machines(
                     0,
@@ -154,7 +154,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     fun Check(): Boolean {
         when {
-            binding.etNameClient.text.isEmpty() -> {
+            binding.etNameClient.text?.isEmpty() == true -> {
                 hideKeyboard()
                 util_widgets().snackbarMessage(
                     binding.root,
@@ -163,7 +163,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 )
                 return false
             }
-            binding.etSerialNumberMachine.text.isEmpty() -> {
+            binding.etSerialNumberMachine.text?.isEmpty() == true -> {
                 hideKeyboard()
                 util_widgets().snackbarMessage(
                     binding.root,
@@ -172,17 +172,17 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 )
                 return false
             }
-            binding.etCodePostal.text.isEmpty() -> {
+            binding.etCodePostal.text?.isEmpty() == true -> {
                 hideKeyboard()
                 util_widgets().snackbarMessage(binding.root, "Debes añadir un Codigo Postal", false)
                 return false
             }
-            binding.etTown.text.isEmpty() -> {
+            binding.etTown.text?.isEmpty() == true -> {
                 hideKeyboard()
                 util_widgets().snackbarMessage(binding.root, "Debes añadir una poblacion", false)
                 return false
             }
-            binding.etAddress.text.isEmpty() -> {
+            binding.etAddress.text?.isEmpty() == true -> {
                 hideKeyboard()
                 util_widgets().snackbarMessage(binding.root, "Debes añadir una dirección", false)
                 return false
@@ -263,7 +263,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
         binding.etTown.setText(machine?.townMachine)
         binding.etAddress.setText(machine?.addressMachine)
 
-        binding.fabSaveCreateMachine.setOnClickListener {
+        binding.btnCreateMachine.setOnClickListener {
             if (Check()) {
                 val machine = Machines(
                     machine!!._id,

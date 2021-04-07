@@ -6,6 +6,6 @@
     <string name="SerialNumberMachine">Nº de Serie</string>
     <string name="dateLastRevision">Fecha Ult. Revisión</string>
     <!--Item Type Machine-->
-    <string name="NameTypeMachine">Tipo de Maquina</string>
+    <string name="NameTypeMachine">Type Machine</string>
     <string name="colorTypeMachine">Color</string>
 </resources>

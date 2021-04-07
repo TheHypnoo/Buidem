@@ -47,8 +47,8 @@ class CreateZonesFragment : Fragment() {
     }
 
     fun create() {
-        binding.fabSaveCreateZone.setOnClickListener {
-            if (binding.etZone.text.isEmpty()) {
+        binding.btnCreateZone.setOnClickListener {
+            if (binding.editTextZone.text?.isEmpty() == true) {
                 activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 utilWidgets.snackbarMessage(
                     binding.root,
@@ -58,7 +58,7 @@ class CreateZonesFragment : Fragment() {
             } else {
                 val zone = Zones(
                     0,
-                    binding.etZone.text.toString(),
+                    binding.editTextZone.text.toString(),
                 )
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
@@ -79,9 +79,9 @@ class CreateZonesFragment : Fragment() {
     }
 
     fun edit() {
-        binding.etZone.setText(zone?.nameZone)
-        binding.fabSaveCreateZone.setOnClickListener {
-            if (binding.etZone.text.isEmpty()) {
+        binding.editTextZone.setText(zone?.nameZone)
+        binding.btnCreateZone.setOnClickListener {
+            if (binding.editTextZone.text?.isEmpty() == true) {
                 activity?.let { it1 ->
                     util_widgets.hideKeyboard.hideSoftKeyBoard(
                         it1.applicationContext,
@@ -96,7 +96,7 @@ class CreateZonesFragment : Fragment() {
             } else {
                 val zone = Zones(
                     zone!!._id,
-                    binding.etZone.text.toString(),
+                    binding.editTextZone.text.toString(),
                 )
                 CoroutineScope(Dispatchers.IO).launch {
                     try {

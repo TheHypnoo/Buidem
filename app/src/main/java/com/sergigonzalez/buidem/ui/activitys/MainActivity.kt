@@ -1,10 +1,7 @@
 package com.sergigonzalez.buidem.ui.activitys
 
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.bottomappbar.BottomAppBar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sergigonzalez.buidem.R
 import com.sergigonzalez.buidem.data.Machines
 import com.sergigonzalez.buidem.data.MachinesApplication
@@ -15,9 +12,6 @@ import com.sergigonzalez.buidem.ui.fragments.Maps.MapsFragment
 import com.sergigonzalez.buidem.ui.fragments.TypeMachine.TypeMachinesFragment
 import com.sergigonzalez.buidem.ui.fragments.Zone.ZonesFragment
 import com.sergigonzalez.buidem.utils.util_widgets
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
