@@ -83,7 +83,7 @@ class MachineAdapter(private val listMachines: List<Machines>) :
                     }
                 }
                 view.findViewById<View>(R.id.llEdit).setOnClickListener {
-                    val activity  = it.context as? AppCompatActivity
+                    val activity = it.context as? AppCompatActivity
                     if (activity != null) {
                         val createMachinesFragment = CreateMachineFragment()
                         val bundle = Bundle()

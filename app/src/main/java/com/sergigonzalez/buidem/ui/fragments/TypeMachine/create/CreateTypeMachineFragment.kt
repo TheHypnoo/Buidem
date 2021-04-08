@@ -55,6 +55,8 @@ class CreateTypeMachineFragment : Fragment() {
     }
 
     fun create() {
+        binding.colorBackground.text = "#6200ee"
+        binding.colorBackground.setBackgroundColor("#6200ee".toColorInt())
         binding.btnCreateTypeMachine.setOnClickListener {
             if (binding.editTextTypeMachine.text?.isEmpty() == true) {
                 hideKeyboard()
@@ -148,7 +150,8 @@ class CreateTypeMachineFragment : Fragment() {
     }
 
     fun Context.hideKeyboard(view: View) {
-        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }

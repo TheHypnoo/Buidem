@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import com.sergigonzalez.buidem.R
 import com.sergigonzalez.buidem.data.Machines
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.data.TypeMachines
@@ -86,7 +87,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
-    fun date() {
+    private fun date() {
         _year = c[Calendar.YEAR]
         _month = c[Calendar.MONTH]
         _day = c[Calendar.DAY_OF_MONTH]
@@ -152,7 +153,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
     }
 
-    fun Check(): Boolean {
+    private fun Check(): Boolean {
         when {
             binding.etNameClient.text?.isEmpty() == true -> {
                 hideKeyboard()
@@ -209,51 +210,60 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
     }
 
-    fun getZones() {
+    private fun getZones() {
         database.MachinesApplication().getAllZones().observe(viewLifecycleOwner) {
             listZones = it
             if (it.isNotEmpty()) {
-                binding.spZone.adapter = ArrayAdapter(
+                val adapter = ArrayAdapter(
                     this@CreateMachineFragment.requireContext(),
-                    android.R.layout.simple_spinner_item,
+                    R.layout.dropdown_item,
                     it.map { zones -> zones.nameZone }
                 )
-                binding.spZone.onItemSelectedListener = this@CreateMachineFragment
-                if (machine != null) {
-                    binding.spZone.setSelection(machine?.zone!! - 1)
-                }
-            }/* else {
-                var lista: List<String> = listOf("No hay ningúna zona")
-                binding.spZone.adapter = ArrayAdapter(
-                    this@CreateMachineFragment.requireContext(),
-                    android.R.layout.simple_spinner_item,
-                    lista
-                )
-                binding.spZone.onItemSelectedListener = this@CreateMachineFragment
-                if (machine != null) {
-                    binding.spZone.setSelection(machine?.zone!! - 1)
-                }
-            }*/
-
-        }
-    }
-
-    fun getTypeMachines() {
-        database.MachinesApplication().getAllTypeMachines().observe(viewLifecycleOwner) {
-            listTypeMachines = it
-            binding.spTypeMachine.adapter = ArrayAdapter(
-                this@CreateMachineFragment.requireContext(),
-                android.R.layout.simple_spinner_item,
-                it.map { TypeMachines -> TypeMachines.nameTypeMachine }
-            )
-            binding.spTypeMachine.onItemSelectedListener = this@CreateMachineFragment
+                binding.spZone.setAdapter(adapter)
+            }
+        }.runCatching {
+            binding.spZone.onItemSelectedListener = this@CreateMachineFragment
             if (machine != null) {
-                binding.spTypeMachine.setSelection(machine?.typeMachine!! - 1)
+                for (contador in listZones.indices)
+                    if (listZones[contador]._id == machine?.zone!!) {
+                        binding.spZone.setText(listZones[contador].nameZone)
+                    }
+            } else {
+                if (listZones.isNotEmpty()) {
+                    binding.spZone.setText(listZones[0].nameZone)
+                } else {
+                    binding.spZone.setText("Esta vacio crea uno")
+                }
             }
         }
     }
 
-    fun edit() {
+    private fun getTypeMachines() {
+        database.MachinesApplication().getAllTypeMachines().observe(viewLifecycleOwner) {
+            listTypeMachines = it
+            binding.spTypeMachine.setAdapter(ArrayAdapter(
+                this@CreateMachineFragment.requireContext(),
+                R.layout.dropdown_item,
+                it.map { TypeMachines -> TypeMachines.nameTypeMachine }
+            ))
+        }.runCatching {
+            binding.spTypeMachine.onItemSelectedListener = this@CreateMachineFragment
+            if (machine != null) {
+                for (contador in listTypeMachines.indices)
+                    if (listTypeMachines[contador]._id == machine?.typeMachine!!) {
+                        binding.spTypeMachine.setText(listTypeMachines[contador].nameTypeMachine)
+                    }
+            } else {
+                if (listTypeMachines.isNotEmpty()) {
+                    binding.spTypeMachine.setText(listTypeMachines[0].nameTypeMachine)
+                } else {
+                    binding.spTypeMachine.setText("Esta vacio crea uno")
+                }
+            }
+        }
+    }
+
+    private fun edit() {
         binding.etNameClient.setText(machine?.nameClient)
         binding.etSerialNumberMachine.setText(machine?.serialNumberMachine)
         binding.etPhoneContact.setText(machine?.phoneContact)
@@ -309,11 +319,11 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
     }
 
-    fun Fragment.hideKeyboard() {
+    private fun Fragment.hideKeyboard() {
         view?.let { activity?.hideKeyboard(it) }
     }
 
-    fun Context.hideKeyboard(view: View) {
+    private fun Context.hideKeyboard(view: View) {
         val inputMethodManager =
             getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)

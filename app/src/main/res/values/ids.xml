@@ -13,4 +13,6 @@
     <item name="text_layout_create_codePostal_Machine" type="id"/>
     <item name="text_layout_create_town_Machine" type="id"/>
     <item name="text_layout_create_address_Machine" type="id"/>
+    <item name="text_layout_create_zone_Machine" type="id"/>
+    <item name="text_layout_create_typeMachine_Machine" type="id"/>
 </resources>

@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var database: MachinesApplication
+    var _namePoblacio: String = "Barcelona"
     private var utilWidgets = util_widgets()
 
     override fun onCreate(savedInstanceState: Bundle?) {

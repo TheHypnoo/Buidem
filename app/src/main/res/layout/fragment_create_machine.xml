@@ -172,11 +172,32 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!--Zone-->
-        <Spinner
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@id/text_layout_create_zone_Machine"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Zona"
+            app:boxStrokeColor="#31AF1C"
+            app:endIconTint="#31AF1C"
+            app:hintTextColor="#31AF1C"
+            app:startIconTint="#31AF1C">
+
+            <AutoCompleteTextView
+                android:id="@+id/spZone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"/>
+        </com.google.android.material.textfield.TextInputLayout>
+       <!-- <Spinner
             android:id="@+id/spZone"
             android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/style_spinner"/>-->
 
         <Space
             android:layout_width="match_parent"
@@ -184,11 +205,30 @@
             android:layout_gravity="center" />
 
         <!--Type Machine-->
-        <Spinner
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@id/text_layout_create_typeMachine_Machine"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Tipo de Maquina"
+            app:boxStrokeColor="#31AF1C"
+            app:endIconTint="#31AF1C"
+            app:hintTextColor="#31AF1C"
+            app:startIconTint="#31AF1C">
+
+            <AutoCompleteTextView
+                android:id="@+id/spTypeMachine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:focusable="false"/>
+        </com.google.android.material.textfield.TextInputLayout>
+       <!-- <Spinner
             android:id="@+id/spTypeMachine"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_gravity="center" />-->
 
         <Button
             android:id="@+id/btn_create_Machine"
