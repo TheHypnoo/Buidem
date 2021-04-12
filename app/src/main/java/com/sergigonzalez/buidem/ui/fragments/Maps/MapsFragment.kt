@@ -1,6 +1,7 @@
 package com.sergigonzalez.buidem.ui.fragments.Maps
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -13,6 +14,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -32,6 +35,10 @@ import java.io.IOException
 
 
 class MapsFragment : Fragment() {
+    companion object {
+        const val REQUEST_CODE_LOCATION = 0
+    }
+
     private var _binding: FragmentMapsBinding? = null
     private val binding get() = _binding!!
     private lateinit var database: MachinesApplication
@@ -124,18 +131,61 @@ class MapsFragment : Fragment() {
 
     private fun applyPermissions() {
         if (ContextCompat.checkSelfPermission(
-                activity!!,
+                requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) ==
             PackageManager.PERMISSION_GRANTED &&
             ContextCompat.checkSelfPermission(
-                activity!!,
+                requireActivity(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) ==
             PackageManager.PERMISSION_GRANTED
         ) {
             googleMap.isMyLocationEnabled = true
             googleMap.uiSettings.isMyLocationButtonEnabled = true
+        } else {
+            requestLocationPermission()
+        }
+    }
+
+    private fun requestLocationPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        ) {
+            Toast.makeText(
+                requireActivity(),
+                "Ve a ajustes y acepta los permisos",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_CODE_LOCATION
+            )
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            REQUEST_CODE_LOCATION -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                googleMap.isMyLocationEnabled = true
+            } else {
+                Toast.makeText(
+                    requireActivity(),
+                    "Para activar la localización ve a ajustes y acepta los permisos",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            else -> {
+            }
         }
     }
 
