@@ -141,7 +141,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         database.MachinesApplication().insertMachine(machine)
                         withContext(Dispatchers.Main) { findNavController().navigate(R.id.action_createMachine_to_MachineFragment) }
                     } catch (e: SQLiteConstraintException) {
-                        hideKeyboard()
+                        activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                         util_widgets().snackbarMessage(
                             binding.root,
                             "Ya existe el numero de serie",
@@ -149,7 +149,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         )
                     }
                 }
-                hideKeyboard()
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Se ha creado correctamente la Maquina",
@@ -162,7 +162,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private fun Check(): Boolean {
         when {
             binding.etNameClient.text?.isEmpty() == true -> {
-                hideKeyboard()
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Debes añadir un nombre al cliente",
@@ -171,7 +171,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 return false
             }
             binding.etSerialNumberMachine.text?.isEmpty() == true -> {
-                hideKeyboard()
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Debes añadir un numero de serie a la maquina",
@@ -180,22 +180,22 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 return false
             }
             binding.etCodePostal.text?.isEmpty() == true -> {
-                hideKeyboard()
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 util_widgets().snackbarMessage(binding.root, "Debes añadir un Codigo Postal", false)
                 return false
             }
             binding.etTown.text?.isEmpty() == true -> {
-                hideKeyboard()
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 util_widgets().snackbarMessage(binding.root, "Debes añadir una poblacion", false)
                 return false
             }
             binding.etAddress.text?.isEmpty() == true -> {
-                hideKeyboard()
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 util_widgets().snackbarMessage(binding.root, "Debes añadir una dirección", false)
                 return false
             }
             selectedZone == 0 -> {
-                hideKeyboard()
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Debes añadir una zona antes de crear la maquina",
@@ -204,7 +204,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 return false
             }
             selectedTypeMachine == 0 -> {
-                hideKeyboard()
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Debes añadir una zona antes de crear la maquina",
@@ -423,7 +423,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         database.MachinesApplication().updateMachine(machine)
                         withContext(Dispatchers.Main) { findNavController().navigate(R.id.action_createMachine_to_MachineFragment) }
                     } catch (e: SQLiteConstraintException) {
-                        hideKeyboard()
+                        activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                         util_widgets().snackbarMessage(
                             binding.root,
                             "Ya existe el numero de serie",
@@ -431,14 +431,14 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         )
                     }
                 }
-                hideKeyboard()
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Se ha Actualizado correctamente la Maquina",
                     true
                 )
             } else {
-                hideKeyboard()
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "No puedes actualizar una maquina sin introducir nada",
@@ -446,16 +446,6 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 )
             }
         }
-    }
-
-    fun Fragment.hideKeyboard() {
-        view?.let { activity?.hideKeyboard(it) }
-    }
-
-    fun Context.hideKeyboard(view: View) {
-        val inputMethodManager =
-            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 }

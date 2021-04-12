@@ -20,13 +20,6 @@ import com.sergigonzalez.buidem.R
 
 class util_widgets {
 
-    fun replaceFragment(fragment: Fragment, activity: FragmentActivity) {
-        val transaction = activity.supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        //transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
     fun snackbarMessage(_view: View, _message: String, CorrectorIncorrect: Boolean) {
         if (CorrectorIncorrect) {
             val snackbar = Snackbar.make(_view, _message, Snackbar.LENGTH_SHORT)
@@ -59,7 +52,7 @@ class util_widgets {
         return x - 273.15
     }
 
-    fun Fragment.hideKeyboard() {
+/*    fun Fragment.hideKeyboard() {
         view?.let { activity?.hideKeyboard(it) }
     }
 
@@ -71,7 +64,7 @@ class util_widgets {
         val inputMethodManager =
             getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-    }
+    }*/
 
     object hideKeyboard {
 

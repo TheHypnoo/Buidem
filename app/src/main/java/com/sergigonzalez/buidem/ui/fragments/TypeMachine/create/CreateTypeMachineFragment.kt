@@ -60,7 +60,7 @@ class CreateTypeMachineFragment : Fragment() {
         binding.colorBackground.setBackgroundColor("#6200ee".toColorInt())
         binding.btnCreateTypeMachine.setOnClickListener {
             if (binding.editTextTypeMachine.text?.isEmpty() == true) {
-                hideKeyboard()
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 utilWidgets.snackbarMessage(
                     binding.root,
                     "No has introducido ningún nombre para el tipo de maquina",
@@ -76,8 +76,9 @@ class CreateTypeMachineFragment : Fragment() {
                     try {
                         database.MachinesApplication().insertTypeMachine(typeMachine)
                         withContext(Dispatchers.Main) { findNavController().navigate(R.id.action_createTypeMachine_to_TypeMachineFragment) }
+                        activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                     } catch (e: SQLiteConstraintException) {
-                        hideKeyboard()
+                        activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                         utilWidgets.snackbarMessage(
                             binding.root,
                             "Ya existe el nombre de ese tipo de maquina",
@@ -97,7 +98,7 @@ class CreateTypeMachineFragment : Fragment() {
         binding.colorBackground.text = typeMachines!!.colorTypeMachine
         binding.btnCreateTypeMachine.setOnClickListener {
             if (binding.editTextTypeMachine.text?.isEmpty() == true) {
-                hideKeyboard()
+                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                 utilWidgets.snackbarMessage(
                     binding.root,
                     "No has introducido ningún nombre para el tipo de maquina",
@@ -114,7 +115,7 @@ class CreateTypeMachineFragment : Fragment() {
                         database.MachinesApplication().updateTypeMachine(typeMachine)
                         withContext(Dispatchers.Main) { findNavController().navigate(R.id.action_createTypeMachine_to_TypeMachineFragment) }
                     } catch (e: SQLiteConstraintException) {
-                        hideKeyboard()
+                        activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
                         utilWidgets.snackbarMessage(
                             binding.root,
                             "Ya existe el nombre de ese tipo de maquina",
@@ -146,15 +147,5 @@ class CreateTypeMachineFragment : Fragment() {
                 }
                 .show()
         }
-    }
-
-    fun Fragment.hideKeyboard() {
-        view?.let { activity?.hideKeyboard(it) }
-    }
-
-    fun Context.hideKeyboard(view: View) {
-        val inputMethodManager =
-            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }

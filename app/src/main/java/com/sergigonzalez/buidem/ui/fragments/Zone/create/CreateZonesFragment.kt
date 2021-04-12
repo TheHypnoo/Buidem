@@ -12,7 +12,6 @@ import com.sergigonzalez.buidem.R
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.data.Zones
 import com.sergigonzalez.buidem.databinding.FragmentCreateZonesBinding
-import com.sergigonzalez.buidem.ui.fragments.Zone.ZonesFragment
 import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,7 +51,12 @@ class CreateZonesFragment : Fragment() {
     fun create() {
         binding.btnCreateZone.setOnClickListener {
             if (binding.editTextZone.text?.isEmpty() == true) {
-                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                activity?.let { it1 ->
+                    util_widgets.hideKeyboard.hideSoftKeyBoard(
+                        it1.applicationContext,
+                        binding.root
+                    )
+                }
                 utilWidgets.snackbarMessage(
                     binding.root,
                     "No has introducido ningún nombre para crear la zona",
@@ -66,10 +70,20 @@ class CreateZonesFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         database.MachinesApplication().insertZones(zone)
-                        withContext(Dispatchers.Main) {findNavController().navigate(R.id.action_createZone_to_ZoneFragment)}
-                        activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                        withContext(Dispatchers.Main) { findNavController().navigate(R.id.action_createZone_to_ZoneFragment) }
+                        activity?.let { it1 ->
+                            util_widgets.hideKeyboard.hideSoftKeyBoard(
+                                it1.applicationContext,
+                                binding.root
+                            )
+                        }
                     } catch (e: SQLiteConstraintException) {
-                        activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                        activity?.let { it1 ->
+                            util_widgets.hideKeyboard.hideSoftKeyBoard(
+                                it1.applicationContext,
+                                binding.root
+                            )
+                        }
                         utilWidgets.snackbarMessage(
                             binding.root,
                             "Ya existe ese nombre en una zona",
@@ -104,7 +118,7 @@ class CreateZonesFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         database.MachinesApplication().updateZone(zone)
-                        withContext(Dispatchers.Main) {findNavController().navigate(R.id.action_createZone_to_ZoneFragment)}
+                        withContext(Dispatchers.Main) { findNavController().navigate(R.id.action_createZone_to_ZoneFragment) }
                         activity?.let { it1 ->
                             util_widgets.hideKeyboard.hideSoftKeyBoard(
                                 it1.applicationContext,
