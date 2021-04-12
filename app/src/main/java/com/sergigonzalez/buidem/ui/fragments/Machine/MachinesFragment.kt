@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,8 +16,6 @@ import com.sergigonzalez.buidem.data.Machines
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.databinding.FragmentMachinesBinding
 import com.sergigonzalez.buidem.ui.fragments.Machine.adapter.MachineAdapter
-import com.sergigonzalez.buidem.ui.fragments.Machine.create.CreateMachineFragment
-import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,7 +25,6 @@ class MachinesFragment : Fragment() {
     private var listMachines: List<Machines> = emptyList()
     private var _binding: FragmentMachinesBinding? = null
     private val binding get() = _binding!!
-    private var utilWidgets = util_widgets()
     private var singlePosition = 0
     private var orderType = 1
 
@@ -43,10 +41,8 @@ class MachinesFragment : Fragment() {
         activity?.title = "Home"
         database = MachinesApplication.getDatabase(this@MachinesFragment.requireContext())
         binding.faCreateMachine.setOnClickListener {
-            utilWidgets.replaceFragment(
-                CreateMachineFragment(),
-                requireActivity()
-            )
+            findNavController().navigate(R.id.action_MachineFragment_to_createMachine)
+            findNavController().popBackStack(R.id.action_MachineFragment_to_createMachine, true);
         }
         assignAdapter()
         getAllMachines(true)

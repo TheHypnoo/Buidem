@@ -33,6 +33,12 @@ interface MachinesDAO {
     @Query("SELECT * FROM Machines WHERE zone = :id")
     fun searchMachinesbyIDZone(id: Int): List<Machines>
 
+    @Query("SELECT * FROM TypeMachines WHERE _id = :id")
+    fun searchTypeMachinebyID(id: Int): TypeMachines
+
+    @Query("SELECT * FROM Zones WHERE _id = :id")
+    fun searchZonebyID(id: Int): Zones
+
     @Insert
     fun insertMachine(Machines: Machines)
 

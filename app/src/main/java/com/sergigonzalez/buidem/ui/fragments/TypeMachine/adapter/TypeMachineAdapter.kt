@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.sergigonzalez.buidem.R
@@ -23,16 +24,13 @@ class TypeMachineAdapter(private val listTypeMachine: List<TypeMachines>) :
         return TypeMachineHolder(viewInflater.inflate(R.layout.item_typemachine, parent, false))
     }
 
-    override fun onBindViewHolder(holder: TypeMachineHolder, position: Int) {
+    override fun onBindViewHolder(holder: TypeMachineHolder, position: Int) =
         holder.render(listTypeMachine[position])
-
-    }
 
     override fun getItemCount(): Int = listTypeMachine.size
 
     class TypeMachineHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         val binding = ItemTypemachineBinding.bind(view)
-        private var utilWidgets = util_widgets()
 
         fun render(TypeMachine: TypeMachines) {
             binding.root.setOnClickListener {
@@ -43,11 +41,11 @@ class TypeMachineAdapter(private val listTypeMachine: List<TypeMachines>) :
                 view.findViewById<View>(R.id.llEdit).setOnClickListener {
                     val activity = it.context as? AppCompatActivity
                     if (activity != null) {
-                        val createTypeMachineFragment = CreateTypeMachineFragment()
                         val bundle = Bundle()
                         bundle.putSerializable("TypeMachine", TypeMachine)
-                        createTypeMachineFragment.arguments = bundle
-                        utilWidgets.replaceFragment(createTypeMachineFragment, activity)
+                        val navController =
+                            Navigation.findNavController(activity, R.id.fragment_container)
+                        navController.navigate(R.id.action_TypeMachineFragment_to_createTypeMachine, bundle)
                     }
                     bt.dismiss()
                 }

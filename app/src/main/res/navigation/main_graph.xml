@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/MachineFragment">
+
+    <fragment
+        android:id="@+id/MachineFragment"
+        android:name="com.sergigonzalez.buidem.ui.fragments.Machine.MachinesFragment"
+        android:label="Machine"
+        tools:layout="@layout/fragment_machines">
+        <action
+            android:id="@+id/action_MachineFragment_to_createMachine"
+            app:destination="@id/createMachine" />
+        <action
+            android:id="@+id/action_MachineFragment_to_MapsFragment"
+            app:destination="@id/MapsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ZoneFragment"
+        android:name="com.sergigonzalez.buidem.ui.fragments.Zone.ZonesFragment"
+        android:label="Zone"
+        tools:layout="@layout/fragment_zones">
+        <action
+            android:id="@+id/action_ZoneFragment_to_createZone"
+            app:destination="@id/createZone" />
+        <action
+            android:id="@+id/action_ZoneFragment_to_MapsFragment"
+            app:destination="@id/MapsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/TypeMachineFragment"
+        android:name="com.sergigonzalez.buidem.ui.fragments.TypeMachine.TypeMachinesFragment"
+        android:label="TypeMachine"
+        tools:layout="@layout/fragment_type_machines">
+        <action
+            android:id="@+id/action_TypeMachineFragment_to_createTypeMachine"
+            app:destination="@id/createTypeMachine" />
+    </fragment>
+    <fragment
+        android:id="@+id/MapsFragment"
+        android:name="com.sergigonzalez.buidem.ui.fragments.Maps.MapsFragment"
+        android:label="Maps"
+        tools:layout="@layout/fragment_maps">
+        <argument
+            android:name="Machine"
+            app:argType="com.sergigonzalez.buidem.data.Machines" />
+        <argument
+            android:name="listMachines"
+            app:argType="com.sergigonzalez.buidem.data.Machines" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/createMachine"
+        android:name="com.sergigonzalez.buidem.ui.fragments.Machine.create.CreateMachineFragment"
+        android:label="CreateMachine"
+        tools:layout="@layout/fragment_create_machine">
+        <action
+            android:id="@+id/action_createMachine_to_MachineFragment"
+            app:destination="@id/MachineFragment" />
+        <argument
+            android:name="Machine"
+            app:argType="com.sergigonzalez.buidem.data.Machines" />
+    </fragment>
+    <fragment
+        android:id="@+id/createZone"
+        android:name="com.sergigonzalez.buidem.ui.fragments.Zone.create.CreateZonesFragment"
+        android:label="CreateZone"
+        tools:layout="@layout/fragment_create_zones">
+        <action
+            android:id="@+id/action_createZone_to_ZoneFragment"
+            app:destination="@id/ZoneFragment" />
+        <argument
+            android:name="Zone"
+            app:argType="com.sergigonzalez.buidem.data.Zones" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createTypeMachine"
+        android:name="com.sergigonzalez.buidem.ui.fragments.TypeMachine.create.CreateTypeMachineFragment"
+        android:label="CreateTypeMachine"
+        tools:layout="@layout/fragment_create_type_machine">
+        <action
+            android:id="@+id/action_createTypeMachine_to_TypeMachineFragment"
+            app:destination="@id/TypeMachineFragment" />
+        <argument
+            android:name="TypeMachine"
+            app:argType="com.sergigonzalez.buidem.data.TypeMachines" />
+    </fragment>
+
+</navigation>

@@ -1,7 +1,9 @@
 package com.sergigonzalez.buidem.ui.fragments.Machine.create
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.os.Bundle
@@ -10,21 +12,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.github.dhaval2404.colorpicker.ColorPickerDialog
+import com.github.dhaval2404.colorpicker.model.ColorShape
 import com.sergigonzalez.buidem.R
 import com.sergigonzalez.buidem.data.Machines
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.data.TypeMachines
 import com.sergigonzalez.buidem.data.Zones
 import com.sergigonzalez.buidem.databinding.FragmentCreateMachineBinding
-import com.sergigonzalez.buidem.ui.fragments.Machine.MachinesFragment
 import com.sergigonzalez.buidem.utils.DialogCalendar
 import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 
@@ -113,7 +119,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
             }
     }
 
-    fun create() {
+    private fun create() {
         binding.btnCreateMachine.setOnClickListener {
             if (Check()) {
                 val machine = Machines(
@@ -133,7 +139,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         database.MachinesApplication().insertMachine(machine)
-                        utilWidgets.replaceFragment(MachinesFragment(), requireActivity())
+                        withContext(Dispatchers.Main) { findNavController().navigate(R.id.action_createMachine_to_MachineFragment) }
                     } catch (e: SQLiteConstraintException) {
                         hideKeyboard()
                         util_widgets().snackbarMessage(
@@ -211,59 +217,182 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     private fun getZones() {
+        var nameZone = ""
         database.MachinesApplication().getAllZones().observe(viewLifecycleOwner) {
             listZones = it
             if (it.isNotEmpty()) {
-                val adapter = ArrayAdapter(
+                binding.spZone.adapter = ArrayAdapter(
                     this@CreateMachineFragment.requireContext(),
-                    R.layout.dropdown_item,
+                    android.R.layout.simple_spinner_item,
                     it.map { zones -> zones.nameZone }
                 )
-                binding.spZone.setAdapter(adapter)
-            }
-        }.runCatching {
-            binding.spZone.onItemSelectedListener = this@CreateMachineFragment
-            if (machine != null) {
-                for (contador in listZones.indices)
-                    if (listZones[contador]._id == machine?.zone!!) {
-                        binding.spZone.setText(listZones[contador].nameZone)
+                if (machine != null) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        nameZone = database.MachinesApplication()
+                            .searchZonebyID(machine?.zone!!).nameZone
+                    }.invokeOnCompletion {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            for (d in listZones.indices) {
+                                if (listZones[d].nameZone == nameZone) {
+                                    binding.spZone.setSelection(d)
+                                }
+                            }
+                        }
                     }
-            } else {
-                if (listZones.isNotEmpty()) {
-                    binding.spZone.setText(listZones[0].nameZone)
-                } else {
-                    binding.spZone.setText("Esta vacio crea uno")
+                }
+                binding.spZone.onItemSelectedListener = this@CreateMachineFragment
+                binding.ivCreateZone.setOnClickListener {
+                    createZoneifEmpty()
                 }
             }
         }
+    }
+
+    private fun createZoneifEmpty() {
+        val alertZone = AlertDialog.Builder(this@CreateMachineFragment.context)
+        val inflater = this.layoutInflater
+        val v2: View = inflater.inflate(R.layout.fragment_create_zones, null)
+        val etNomZona = v2.findViewById<EditText>(R.id.editTextZone)
+        val btnCreateZone = v2.findViewById<Button>(R.id.btn_create_zone)
+        btnCreateZone.visibility = View.GONE
+        alertZone.setView(v2).setPositiveButton("Create Zone") { dialog, which ->
+            val nomZona = etNomZona.text.toString()
+            if (nomZona.isNotEmpty()) {
+                val zone = Zones(
+                    0,
+                    nomZona,
+                )
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        database.MachinesApplication().insertZones(zone)
+                        activity?.let { it1 ->
+                            util_widgets.hideKeyboard.hideSoftKeyBoard(
+                                it1.applicationContext,
+                                binding.root
+                            )
+                        }
+                    } catch (e: SQLiteConstraintException) {
+                        activity?.let { it1 ->
+                            util_widgets.hideKeyboard.hideSoftKeyBoard(
+                                it1.applicationContext,
+                                binding.root
+                            )
+                        }
+                        utilWidgets.snackbarMessage(
+                            binding.root,
+                            "Ya existe ese nombre en una zona",
+                            false
+                        )
+                    }
+                }
+            } else {
+                utilWidgets.snackbarMessage(
+                    binding.root,
+                    "No has introducido ningun nombre para la zona",
+                    false
+                )
+            }
+        }
+        alertZone.setNegativeButton("Cancel", null)
+        val dialog = alertZone.create()
+        dialog.show()
+    }
+
+    @SuppressLint("ResourceType")
+    private fun createTypeMachineifEmpty() {
+        val alertTypeMachine = AlertDialog.Builder(this@CreateMachineFragment.context)
+        val inflater = this.layoutInflater
+        val v2: View = inflater.inflate(R.layout.fragment_create_type_machine, null)
+        val etNomTypeMachine = v2.findViewById<EditText>(R.id.editTextTypeMachine)
+        val btnCreateTypeMachine = v2.findViewById<Button>(R.id.btn_create_typeMachine)
+        btnCreateTypeMachine.visibility = View.GONE
+        val etColor = v2.findViewById<TextView>(R.id.color_background)
+        val ivColor = v2.findViewById<ImageView>(R.id.select_color)
+        etColor.text = "#6200ee"
+        etColor.setBackgroundColor("#6200ee".toColorInt())
+        var colorDefault = ContextCompat.getColor(requireContext(), R.color.purple_500)
+        ivColor.setOnClickListener{
+                ColorPickerDialog
+                    .Builder(requireActivity())
+                    .setTitle("Pick Color")
+                    .setColorShape(ColorShape.SQAURE)
+                    .setDefaultColor(colorDefault)
+                    .setColorListener { color, colorHex ->
+                        colorDefault = color
+                        etColor.setBackgroundColor(color)
+                        etColor.text = colorHex
+                    }
+                    .show()
+            }
+        alertTypeMachine.setView(v2).setPositiveButton("Create Type Machine") { dialog, which ->
+            val nomTypeMachine = etNomTypeMachine.text.toString()
+            if (nomTypeMachine.isNotEmpty()) {
+                val typeMachine = TypeMachines(
+                    0,
+                    nomTypeMachine,
+                    etColor.text.toString(),
+                )
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        database.MachinesApplication().insertTypeMachine(typeMachine)
+                    } catch (e: SQLiteConstraintException) {
+                        util_widgets.hideKeyboard
+                        utilWidgets.snackbarMessage(
+                            binding.root,
+                            "Ya existe el nombre de ese tipo de maquina",
+                            false
+                        )
+                    }
+                }
+            } else {
+                utilWidgets.snackbarMessage(
+                    binding.root,
+                    "No has introducido ningun nombre para el Type Machine",
+                    false
+                )
+            }
+        }
+        alertTypeMachine.setNegativeButton("Cancel", null)
+        val dialog = alertTypeMachine.create()
+        dialog.show()
     }
 
     private fun getTypeMachines() {
+        var nameTypeMachine = ""
         database.MachinesApplication().getAllTypeMachines().observe(viewLifecycleOwner) {
             listTypeMachines = it
-            binding.spTypeMachine.setAdapter(ArrayAdapter(
-                this@CreateMachineFragment.requireContext(),
-                R.layout.dropdown_item,
-                it.map { TypeMachines -> TypeMachines.nameTypeMachine }
-            ))
-        }.runCatching {
-            binding.spTypeMachine.onItemSelectedListener = this@CreateMachineFragment
-            if (machine != null) {
-                for (contador in listTypeMachines.indices)
-                    if (listTypeMachines[contador]._id == machine?.typeMachine!!) {
-                        binding.spTypeMachine.setText(listTypeMachines[contador].nameTypeMachine)
+            if (it.isNotEmpty()) {
+                binding.spTypeMachine.adapter = ArrayAdapter(
+                    this@CreateMachineFragment.requireContext(),
+                    android.R.layout.simple_spinner_item,
+                    it.map { TypeMachines -> TypeMachines.nameTypeMachine }
+                )
+                if (machine != null) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        nameTypeMachine = database.MachinesApplication()
+                            .searchTypeMachinebyID(machine?.typeMachine!!).nameTypeMachine
+                    }.invokeOnCompletion {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            for (d in listTypeMachines.indices) {
+                                if (listTypeMachines[d].nameTypeMachine == nameTypeMachine) {
+                                    binding.spTypeMachine.setSelection(d)
+                                }
+                            }
+                        }
                     }
-            } else {
-                if (listTypeMachines.isNotEmpty()) {
-                    binding.spTypeMachine.setText(listTypeMachines[0].nameTypeMachine)
-                } else {
-                    binding.spTypeMachine.setText("Esta vacio crea uno")
+                }
+                binding.spTypeMachine.onItemSelectedListener = this@CreateMachineFragment
+                binding.ivCreateTypeMachine.setOnClickListener {
+                    createTypeMachineifEmpty()
                 }
             }
         }
+
+
     }
 
     private fun edit() {
+        binding.btnCreateMachine.text = "Edit Machine"
         binding.etNameClient.setText(machine?.nameClient)
         binding.etSerialNumberMachine.setText(machine?.serialNumberMachine)
         binding.etPhoneContact.setText(machine?.phoneContact)
@@ -292,7 +421,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         database.MachinesApplication().updateMachine(machine)
-                        utilWidgets.replaceFragment(MachinesFragment(), requireActivity())
+                        withContext(Dispatchers.Main) { findNavController().navigate(R.id.action_createMachine_to_MachineFragment) }
                     } catch (e: SQLiteConstraintException) {
                         hideKeyboard()
                         util_widgets().snackbarMessage(
@@ -319,11 +448,11 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
     }
 
-    private fun Fragment.hideKeyboard() {
+    fun Fragment.hideKeyboard() {
         view?.let { activity?.hideKeyboard(it) }
     }
 
-    private fun Context.hideKeyboard(view: View) {
+    fun Context.hideKeyboard(view: View) {
         val inputMethodManager =
             getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)

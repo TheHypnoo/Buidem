@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.sergigonzalez.buidem.R
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.data.Zones
 import com.sergigonzalez.buidem.databinding.FragmentZonesBinding
@@ -41,10 +43,7 @@ class ZonesFragment : Fragment() {
         activity?.title = "Zones"
         database = MachinesApplication.getDatabase(this@ZonesFragment.requireContext())
         binding.faCreateZones.setOnClickListener {
-            utilWidgets.replaceFragment(
-                CreateZonesFragment(),
-                requireActivity()
-            )
+            findNavController().navigate(R.id.action_ZoneFragment_to_createZone)
         }
         assignAdapter()
         getAllZones()

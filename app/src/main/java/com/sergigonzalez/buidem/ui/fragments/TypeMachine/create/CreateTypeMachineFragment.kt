@@ -11,17 +11,18 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.colorpicker.ColorPickerDialog
 import com.github.dhaval2404.colorpicker.model.ColorShape
 import com.sergigonzalez.buidem.R
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.data.TypeMachines
 import com.sergigonzalez.buidem.databinding.FragmentCreateTypeMachineBinding
-import com.sergigonzalez.buidem.ui.fragments.TypeMachine.TypeMachinesFragment
 import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CreateTypeMachineFragment : Fragment() {
     private lateinit var database: MachinesApplication
@@ -74,7 +75,7 @@ class CreateTypeMachineFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         database.MachinesApplication().insertTypeMachine(typeMachine)
-                        utilWidgets.replaceFragment(TypeMachinesFragment(), requireActivity())
+                        withContext(Dispatchers.Main) { findNavController().navigate(R.id.action_createTypeMachine_to_TypeMachineFragment) }
                     } catch (e: SQLiteConstraintException) {
                         hideKeyboard()
                         utilWidgets.snackbarMessage(
@@ -90,7 +91,9 @@ class CreateTypeMachineFragment : Fragment() {
 
     fun edit() {
         binding.editTextTypeMachine.setText(typeMachines?.nameTypeMachine)
-        binding.colorBackground.setBackgroundColor(typeMachines?.colorTypeMachine!!.toColorInt())
+        if (!typeMachines?.colorTypeMachine.isNullOrEmpty()) {
+            binding.colorBackground.setBackgroundColor(typeMachines?.colorTypeMachine!!.toColorInt())
+        }
         binding.colorBackground.text = typeMachines!!.colorTypeMachine
         binding.btnCreateTypeMachine.setOnClickListener {
             if (binding.editTextTypeMachine.text?.isEmpty() == true) {
@@ -109,7 +112,7 @@ class CreateTypeMachineFragment : Fragment() {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         database.MachinesApplication().updateTypeMachine(typeMachine)
-                        utilWidgets.replaceFragment(TypeMachinesFragment(), requireActivity())
+                        withContext(Dispatchers.Main) { findNavController().navigate(R.id.action_createTypeMachine_to_TypeMachineFragment) }
                     } catch (e: SQLiteConstraintException) {
                         hideKeyboard()
                         utilWidgets.snackbarMessage(

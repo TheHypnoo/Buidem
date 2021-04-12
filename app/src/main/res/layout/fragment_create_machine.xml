@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginBottom="?actionBarSize"
+    xmlns:tools="http://schemas.android.com/tools"
     android:fillViewport="true">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
         <!--Nombre del Cliente-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@id/text_layout_create_nameClient_Machine"
@@ -171,64 +171,57 @@
                 android:inputType="textPostalAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--Zone-->
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_gravity="center" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@id/text_layout_create_zone_Machine"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        <!--Zone-->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Zona"
-            app:boxStrokeColor="#31AF1C"
-            app:endIconTint="#31AF1C"
-            app:hintTextColor="#31AF1C"
-            app:startIconTint="#31AF1C">
+            android:gravity="center"
+            android:orientation="horizontal">
 
-            <AutoCompleteTextView
+            <Spinner
                 android:id="@+id/spZone"
-                android:layout_width="match_parent"
+                android:layout_width="330dp"
                 android:layout_height="wrap_content"
-                android:inputType="none"
-                android:focusable="false"/>
-        </com.google.android.material.textfield.TextInputLayout>
-       <!-- <Spinner
-            android:id="@+id/spZone"
-            android:layout_width="250dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:background="@drawable/style_spinner"/>-->
+                android:layout_gravity="center"/>
+
+            <ImageView
+                android:id="@+id/ivCreateZone"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_zone" />
+        </LinearLayout>
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="10dp"
             android:layout_gravity="center" />
 
         <!--Type Machine-->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@id/text_layout_create_typeMachine_Machine"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Tipo de Maquina"
-            app:boxStrokeColor="#31AF1C"
-            app:endIconTint="#31AF1C"
-            app:hintTextColor="#31AF1C"
-            app:startIconTint="#31AF1C">
+            android:gravity="center"
+            android:orientation="horizontal">
 
-            <AutoCompleteTextView
+            <Spinner
                 android:id="@+id/spTypeMachine"
-                android:layout_width="match_parent"
+                android:layout_width="330dp"
                 android:layout_height="wrap_content"
-                android:inputType="none"
-                android:focusable="false"/>
-        </com.google.android.material.textfield.TextInputLayout>
-       <!-- <Spinner
-            android:id="@+id/spTypeMachine"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />-->
+                android:layout_gravity="center" />
+
+            <ImageView
+                android:id="@+id/ivCreateTypeMachine"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_type_machines"/>
+        </LinearLayout>
 
         <Button
             android:id="@+id/btn_create_Machine"
@@ -239,6 +232,7 @@
             android:background="@drawable/custom_button"
             android:text="Create Machine"
             android:textAlignment="center" />
+
     </LinearLayout>
 
 </ScrollView>

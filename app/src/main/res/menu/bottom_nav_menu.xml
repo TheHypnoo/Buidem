@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/miHome"
+        android:id="@+id/MachineFragment"
         android:icon="@drawable/ic_repair_machine"
         android:title="Home" />
 
     <item
-        android:id="@+id/miZones"
+        android:id="@+id/ZoneFragment"
         android:icon="@drawable/ic_zone"
         android:title="Zones" />
 
     <item
-        android:id="@+id/miTypeMachines"
+        android:id="@+id/TypeMachineFragment"
         android:icon="@drawable/ic_type_machines"
         android:title="Machine" />
 
     <item
-        android:id="@+id/miMaps"
+        android:id="@+id/MapsFragment"
         android:icon="@drawable/ic_google_maps"
         android:title="Maps" />
 

@@ -1,24 +1,21 @@
 package com.sergigonzalez.buidem.ui.fragments.TypeMachine
 
-import android.R
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.sergigonzalez.buidem.R
 import com.sergigonzalez.buidem.data.MachinesApplication
 import com.sergigonzalez.buidem.data.TypeMachines
 import com.sergigonzalez.buidem.databinding.FragmentTypeMachinesBinding
 import com.sergigonzalez.buidem.ui.fragments.TypeMachine.adapter.TypeMachineAdapter
-import com.sergigonzalez.buidem.ui.fragments.TypeMachine.create.CreateTypeMachineFragment
 import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,10 +42,7 @@ class TypeMachinesFragment : Fragment() {
         activity?.title = "Type Machines"
         database = MachinesApplication.getDatabase(this@TypeMachinesFragment.requireContext())
         binding.faCreateTypeMachine.setOnClickListener {
-            utilWidgets.replaceFragment(
-                CreateTypeMachineFragment(),
-                requireActivity()
-            )
+            findNavController().navigate(R.id.action_TypeMachineFragment_to_createTypeMachine)
         }
         assignAdapter()
         getAllTypeMachines()
@@ -91,7 +85,7 @@ class TypeMachinesFragment : Fragment() {
                                 builder.setMessage("Estas seguro que deseas eliminar la Maquina?\nCon Nombre: ${listTypeMachines[position].nameTypeMachine}\ny Color:  ${listTypeMachines[position].colorTypeMachine}")
 
 
-                                builder.setPositiveButton(R.string.ok) { _, _ ->
+                                builder.setPositiveButton(android.R.string.ok) { _, _ ->
                                     CoroutineScope(Dispatchers.IO).launch {
                                         database.MachinesApplication()
                                             .deleteTypeMachine(listTypeMachines[position])
@@ -99,7 +93,7 @@ class TypeMachinesFragment : Fragment() {
                                     binding.rvTypeMachines.adapter!!.notifyItemRemoved(position)
                                 }
 
-                                builder.setNegativeButton(R.string.cancel) { dialog, _ ->
+                                builder.setNegativeButton(android.R.string.cancel) { dialog, _ ->
                                     dialog.dismiss()
                                     binding.rvTypeMachines.adapter!!.notifyItemChanged(position)
                                 }
