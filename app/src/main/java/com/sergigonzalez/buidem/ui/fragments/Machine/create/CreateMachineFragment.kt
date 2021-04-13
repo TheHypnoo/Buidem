@@ -2,7 +2,6 @@ package com.sergigonzalez.buidem.ui.fragments.Machine.create
 
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
@@ -11,7 +10,6 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
@@ -240,10 +238,10 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         }
                     }
                 }
-                binding.spZone.onItemSelectedListener = this@CreateMachineFragment
-                binding.ivCreateZone.setOnClickListener {
-                    createZoneifEmpty()
-                }
+            }
+            binding.spZone.onItemSelectedListener = this@CreateMachineFragment
+            binding.ivCreateZone.setOnClickListener {
+                createZoneifEmpty()
             }
         }
     }
@@ -381,14 +379,12 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         }
                     }
                 }
-                binding.spTypeMachine.onItemSelectedListener = this@CreateMachineFragment
-                binding.ivCreateTypeMachine.setOnClickListener {
-                    createTypeMachineifEmpty()
-                }
+            }
+            binding.spTypeMachine.onItemSelectedListener = this@CreateMachineFragment
+            binding.ivCreateTypeMachine.setOnClickListener {
+                createTypeMachineifEmpty()
             }
         }
-
-
     }
 
     private fun edit() {

@@ -25,8 +25,8 @@ class MachinesFragment : Fragment() {
     private var listMachines: List<Machines> = emptyList()
     private var _binding: FragmentMachinesBinding? = null
     private val binding get() = _binding!!
-    private var singlePosition = 0
-    private var orderType = 1
+    private var singlePosition = -1
+    private var orderType = -1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -204,6 +204,7 @@ class MachinesFragment : Fragment() {
 
     private fun selectOrder() {
         when (singlePosition) {
+            0 -> orderType = 0
             1 -> orderType = 1
             2 -> orderType = 2
             3 -> orderType = 3
