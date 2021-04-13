@@ -3,16 +3,13 @@ package com.sergigonzalez.buidem.ui.fragments.weather
 import android.app.ProgressDialog
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.opengl.Visibility
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.sergigonzalez.buidem.R
 import com.sergigonzalez.buidem.data.model.Weather
 import com.sergigonzalez.buidem.databinding.FragmentWeatherBinding
 import com.sergigonzalez.buidem.utils.Service
@@ -90,9 +87,9 @@ class WeatherFragment : Fragment() {
                 if (cityList != null) {
 
                     binding.tvNameCity.text = "Tiempo actual en ${cityList.name}"
-                    binding.tvTempmax.text =
+                    binding.tvTempMax.text =
                         "${utilWidgets.convertFahreheit(cityList.main.tempMax).toInt()} º"
-                    binding.tvTemMin.text =
+                    binding.tvTempMin.text =
                         "${utilWidgets.convertFahreheit(cityList.main.tempMin).toInt()} º"
 
                     binding.tvTempNormal.text =
@@ -110,7 +107,6 @@ class WeatherFragment : Fragment() {
                         URL("https://openweathermap.org/img/wn/" + cityList.weather[0].icon + "@2x.png")
                     val bmp = BitmapFactory.decodeStream(uri.openConnection().getInputStream())
                     binding.imgIcon.setImageBitmap(bmp)
-                    //binding.edtCiudad.text = Editable.Factory.getInstance().newEditable("")
 
                     Dialog.hide()
                 }
@@ -125,7 +121,7 @@ class WeatherFragment : Fragment() {
     }
 
     private fun visibility(visible: Boolean) {
-        if(visible) {
+        if (visible) {
             binding.CLWeather.visibility = View.VISIBLE
         } else {
             binding.CLWeather.visibility = View.GONE

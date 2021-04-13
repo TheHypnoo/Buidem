@@ -122,8 +122,8 @@ class MapsFragment : Fragment() {
             )
         } catch (e: IOException) {
             _lanlat = LatLng(
-                0.toDouble(),
-                0.toDouble()
+                0.0,
+                0.0
             )
         }
         return _lanlat
