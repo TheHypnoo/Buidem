@@ -268,18 +268,20 @@ class MapsFragment : Fragment() {
                     val marker = getLocationFromAddress(
                         machine.addressMachine + " " + machine.townMachine + " " + machine.postalCodeMachine
                     )
-
-                    if (machine._id == listMachineID[contador]) {
-                        googleMap.addMarker(
-                            MarkerOptions().position(marker).title(machine.nameClient)
-                                .snippet(
-                                    machine.addressMachine + ", " + machine.townMachine + ", " + machine.postalCodeMachine
-                                ).draggable(true).icon(
-                                    getMarkerIcon(
-                                        listColors[contador]
+                    for(machineID in listMachineID) {
+                        if (machine._id == machineID) {
+                            googleMap.addMarker(
+                                MarkerOptions().position(marker).title(machine.nameClient)
+                                    .snippet(
+                                        machine.addressMachine + ", " + machine.townMachine + ", " + machine.postalCodeMachine
+                                    ).draggable(true).icon(
+                                        getMarkerIcon(
+                                            listColors[contador]
+                                        )
                                     )
-                                )
-                        )
+                            )
+                            contador++
+                        }
                     }
                     val cameraPosition =
                         CameraPosition.Builder().target(marker).zoom(10f).build()
@@ -288,7 +290,7 @@ class MapsFragment : Fragment() {
                             cameraPosition
                         )
                     )
-                    ++contador
+
                 }
             } else {
                 utilWidgets.snackbarMessage(
