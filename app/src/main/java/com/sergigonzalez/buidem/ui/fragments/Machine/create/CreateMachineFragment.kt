@@ -45,6 +45,8 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private var listTypeMachines: List<TypeMachines> = emptyList()
     private var selectedZone: Int = 0
     private var selectedTypeMachine: Int = 0
+    private var createdZone: Boolean = false
+    private var createdTypeMachine: Boolean = false
     private var machine: Machines? = null
     private var utilWidgets = util_widgets()
 
@@ -139,7 +141,12 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         database.MachinesApplication().insertMachine(machine)
                         withContext(Dispatchers.Main) { findNavController().navigate(R.id.action_createMachine_to_MachineFragment) }
                     } catch (e: SQLiteConstraintException) {
-                        activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                        activity?.let { it1 ->
+                            util_widgets.hideKeyboard.hideSoftKeyBoard(
+                                it1.applicationContext,
+                                binding.root
+                            )
+                        }
                         util_widgets().snackbarMessage(
                             binding.root,
                             "Ya existe el numero de serie",
@@ -147,7 +154,12 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         )
                     }
                 }
-                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                activity?.let { it1 ->
+                    util_widgets.hideKeyboard.hideSoftKeyBoard(
+                        it1.applicationContext,
+                        binding.root
+                    )
+                }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Se ha creado correctamente la Maquina",
@@ -160,7 +172,12 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private fun Check(): Boolean {
         when {
             binding.etNameClient.text?.isEmpty() == true -> {
-                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                activity?.let { it1 ->
+                    util_widgets.hideKeyboard.hideSoftKeyBoard(
+                        it1.applicationContext,
+                        binding.root
+                    )
+                }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Debes añadir un nombre al cliente",
@@ -169,7 +186,12 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 return false
             }
             binding.etSerialNumberMachine.text?.isEmpty() == true -> {
-                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                activity?.let { it1 ->
+                    util_widgets.hideKeyboard.hideSoftKeyBoard(
+                        it1.applicationContext,
+                        binding.root
+                    )
+                }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Debes añadir un numero de serie a la maquina",
@@ -178,22 +200,42 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 return false
             }
             binding.etCodePostal.text?.isEmpty() == true -> {
-                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                activity?.let { it1 ->
+                    util_widgets.hideKeyboard.hideSoftKeyBoard(
+                        it1.applicationContext,
+                        binding.root
+                    )
+                }
                 util_widgets().snackbarMessage(binding.root, "Debes añadir un Codigo Postal", false)
                 return false
             }
             binding.etTown.text?.isEmpty() == true -> {
-                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                activity?.let { it1 ->
+                    util_widgets.hideKeyboard.hideSoftKeyBoard(
+                        it1.applicationContext,
+                        binding.root
+                    )
+                }
                 util_widgets().snackbarMessage(binding.root, "Debes añadir una poblacion", false)
                 return false
             }
             binding.etAddress.text?.isEmpty() == true -> {
-                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                activity?.let { it1 ->
+                    util_widgets.hideKeyboard.hideSoftKeyBoard(
+                        it1.applicationContext,
+                        binding.root
+                    )
+                }
                 util_widgets().snackbarMessage(binding.root, "Debes añadir una dirección", false)
                 return false
             }
             selectedZone == 0 -> {
-                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                activity?.let { it1 ->
+                    util_widgets.hideKeyboard.hideSoftKeyBoard(
+                        it1.applicationContext,
+                        binding.root
+                    )
+                }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Debes añadir una zona antes de crear la maquina",
@@ -202,7 +244,12 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 return false
             }
             selectedTypeMachine == 0 -> {
-                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                activity?.let { it1 ->
+                    util_widgets.hideKeyboard.hideSoftKeyBoard(
+                        it1.applicationContext,
+                        binding.root
+                    )
+                }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Debes añadir una zona antes de crear la maquina",
@@ -230,19 +277,31 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                             .searchZonebyID(machine?.zone!!).nameZone
                     }.invokeOnCompletion {
                         CoroutineScope(Dispatchers.Main).launch {
-                            for (d in listZones.indices) {
-                                if (listZones[d].nameZone == nameZone) {
-                                    binding.spZone.setSelection(d)
+                            if (!createdZone) {
+                                for (d in listZones.indices) {
+                                    if (listZones[d].nameZone == nameZone) {
+                                        binding.spZone.setSelection(d)
+                                    }
                                 }
+                            } else if (createdZone) {
+                                selectedZone = listZones[listZones.size - 1]._id
+                                binding.spZone.setSelection(listZones.size - 1)
                             }
                         }
                     }
+                } else if (createdZone) {
+                    selectedZone = listZones[listZones.size - 1]._id
+                    binding.spZone.setSelection(listZones.size - 1)
                 }
             }
-            binding.spZone.onItemSelectedListener = this@CreateMachineFragment
-            binding.ivCreateZone.setOnClickListener {
-                createZoneifEmpty()
-            }
+        }
+        binding.spZone.onItemSelectedListener = this@CreateMachineFragment
+        binding.ivCreateZone.setOnClickListener {
+            createZoneifEmpty()
+        }
+        if (createdZone) {
+            selectedZone = listZones[listZones.size - 1]._id
+            binding.spZone.setSelection(listZones.size - 1)
         }
     }
 
@@ -268,6 +327,10 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                                 it1.applicationContext,
                                 binding.root
                             )
+                        }
+                        withContext(Dispatchers.Main) {
+                            createdZone = true
+                            getZones()
                         }
                     } catch (e: SQLiteConstraintException) {
                         activity?.let { it1 ->
@@ -309,19 +372,19 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
         etColor.text = "#6200ee"
         etColor.setBackgroundColor("#6200ee".toColorInt())
         var colorDefault = ContextCompat.getColor(requireContext(), R.color.purple_500)
-        ivColor.setOnClickListener{
-                ColorPickerDialog
-                    .Builder(requireActivity())
-                    .setTitle("Pick Color")
-                    .setColorShape(ColorShape.SQAURE)
-                    .setDefaultColor(colorDefault)
-                    .setColorListener { color, colorHex ->
-                        colorDefault = color
-                        etColor.setBackgroundColor(color)
-                        etColor.text = colorHex
-                    }
-                    .show()
-            }
+        ivColor.setOnClickListener {
+            ColorPickerDialog
+                .Builder(requireActivity())
+                .setTitle("Pick Color")
+                .setColorShape(ColorShape.SQAURE)
+                .setDefaultColor(colorDefault)
+                .setColorListener { color, colorHex ->
+                    colorDefault = color
+                    etColor.setBackgroundColor(color)
+                    etColor.text = colorHex
+                }
+                .show()
+        }
         alertTypeMachine.setView(v2).setPositiveButton("Create Type Machine") { dialog, which ->
             val nomTypeMachine = etNomTypeMachine.text.toString()
             if (nomTypeMachine.isNotEmpty()) {
@@ -333,6 +396,10 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         database.MachinesApplication().insertTypeMachine(typeMachine)
+                        withContext(Dispatchers.Main) {
+                            createdTypeMachine = true
+                            getTypeMachines()
+                        }
                     } catch (e: SQLiteConstraintException) {
                         util_widgets.hideKeyboard
                         utilWidgets.snackbarMessage(
@@ -371,19 +438,31 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                             .searchTypeMachinebyID(machine?.typeMachine!!).nameTypeMachine
                     }.invokeOnCompletion {
                         CoroutineScope(Dispatchers.Main).launch {
-                            for (d in listTypeMachines.indices) {
-                                if (listTypeMachines[d].nameTypeMachine == nameTypeMachine) {
-                                    binding.spTypeMachine.setSelection(d)
+                            if (!createdTypeMachine) {
+                                for (d in listTypeMachines.indices) {
+                                    if (listTypeMachines[d].nameTypeMachine == nameTypeMachine) {
+                                        binding.spTypeMachine.setSelection(d)
+                                    }
                                 }
+                            } else if(createdTypeMachine) {
+                                selectedTypeMachine = listTypeMachines[listTypeMachines.size - 1]._id
+                                binding.spTypeMachine.setSelection(listTypeMachines.size - 1)
                             }
                         }
                     }
+                } else if(createdTypeMachine) {
+                    selectedTypeMachine = listTypeMachines[listTypeMachines.size - 1]._id
+                    binding.spTypeMachine.setSelection(listTypeMachines.size - 1)
                 }
             }
             binding.spTypeMachine.onItemSelectedListener = this@CreateMachineFragment
             binding.ivCreateTypeMachine.setOnClickListener {
                 createTypeMachineifEmpty()
             }
+        }
+        if (createdTypeMachine) {
+            selectedTypeMachine = listTypeMachines[listTypeMachines.size - 1]._id
+            binding.spTypeMachine.setSelection(listTypeMachines.size - 1)
         }
     }
 
@@ -419,7 +498,12 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         database.MachinesApplication().updateMachine(machine)
                         withContext(Dispatchers.Main) { findNavController().navigate(R.id.action_createMachine_to_MachineFragment) }
                     } catch (e: SQLiteConstraintException) {
-                        activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                        activity?.let { it1 ->
+                            util_widgets.hideKeyboard.hideSoftKeyBoard(
+                                it1.applicationContext,
+                                binding.root
+                            )
+                        }
                         util_widgets().snackbarMessage(
                             binding.root,
                             "Ya existe el numero de serie",
@@ -427,14 +511,24 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         )
                     }
                 }
-                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                activity?.let { it1 ->
+                    util_widgets.hideKeyboard.hideSoftKeyBoard(
+                        it1.applicationContext,
+                        binding.root
+                    )
+                }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "Se ha Actualizado correctamente la Maquina",
                     true
                 )
             } else {
-                activity?.let { it1 -> util_widgets.hideKeyboard.hideSoftKeyBoard(it1.applicationContext, binding.root) }
+                activity?.let { it1 ->
+                    util_widgets.hideKeyboard.hideSoftKeyBoard(
+                        it1.applicationContext,
+                        binding.root
+                    )
+                }
                 util_widgets().snackbarMessage(
                     binding.root,
                     "No puedes actualizar una maquina sin introducir nada",

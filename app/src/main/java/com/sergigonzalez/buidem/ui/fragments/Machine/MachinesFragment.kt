@@ -38,7 +38,6 @@ class MachinesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.title = "Home"
         database = MachinesApplication.getDatabase(this@MachinesFragment.requireContext())
         binding.faCreateMachine.setOnClickListener {
             findNavController().navigate(R.id.action_MachineFragment_to_createMachine)

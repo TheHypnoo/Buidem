@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:fillViewport="true">
 
     <LinearLayout
@@ -27,6 +26,7 @@
                 android:id="@+id/etNameClient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_card_client"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Numero de Serie de la maquina"
+            android:hint="Numero de Serie"
             app:boxStrokeColor="#31AF1C"
             app:endIconTint="#31AF1C"
             app:hintTextColor="#31AF1C"
@@ -47,6 +47,7 @@
                 android:id="@+id/etSerialNumberMachine"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_serial_number"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -67,7 +68,9 @@
                 android:id="@+id/etPhoneContact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone" />
+                android:drawableEnd="@drawable/ic_call"
+                android:inputType="phone"
+                android:maxLength="9" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -88,6 +91,7 @@
                 android:id="@+id/etEmailContact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_email"
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,6 +112,8 @@
                 android:id="@+id/etDateLastRevision"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_date"
+                android:focusable="false"
                 android:inputType="date" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -120,6 +126,7 @@
             android:layout_marginTop="8dp"
             android:hint="Codigo Postal"
             app:boxStrokeColor="#31AF1C"
+            app:counterMaxLength="5"
             app:endIconTint="#31AF1C"
             app:hintTextColor="#31AF1C"
             app:startIconTint="#31AF1C">
@@ -128,7 +135,9 @@
                 android:id="@+id/etCodePostal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPostalAddress" />
+                android:drawableEnd="@drawable/ic_postal_code"
+                android:inputType="textPostalAddress"
+                android:maxLength="5" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!--Town-->
@@ -148,6 +157,7 @@
                 android:id="@+id/etTown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_town"
                 android:inputType="textPostalAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -168,6 +178,7 @@
                 android:id="@+id/etAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/ic_address"
                 android:inputType="textPostalAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -187,12 +198,13 @@
                 android:id="@+id/spZone"
                 android:layout_width="330dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:drawableEnd="@drawable/ic_down_arrow" />
 
             <ImageView
                 android:id="@+id/ivCreateZone"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_zone" />
         </LinearLayout>
@@ -218,9 +230,9 @@
             <ImageView
                 android:id="@+id/ivCreateTypeMachine"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_type_machines"/>
+                android:src="@drawable/ic_type_machines" />
         </LinearLayout>
 
         <Button

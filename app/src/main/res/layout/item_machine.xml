@@ -33,7 +33,7 @@
                 android:id="@+id/tvNameClientItem"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:gravity="center" />
         </LinearLayout>
         <!--Dirección-->
@@ -53,7 +53,7 @@
                 android:id="@+id/tvAddressItem"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:gravity="center" />
 
         </LinearLayout>
@@ -74,7 +74,7 @@
                 android:id="@+id/tvSerialNumberMachineItem"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:gravity="center" />
 
         </LinearLayout>

@@ -33,6 +33,7 @@
                 android:id="@+id/tvTypeMachineItem"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:textSize="18sp"
                 android:gravity="center" />
         </LinearLayout>
         <!--Dirección-->
@@ -52,6 +53,7 @@
                 android:id="@+id/tvColorTypeMachine"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:textSize="18sp"
                 android:gravity="center"/>
 
         </LinearLayout>

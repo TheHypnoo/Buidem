@@ -8,8 +8,10 @@ import android.os.StrictMode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.sergigonzalez.buidem.application.AppConstants
 import com.sergigonzalez.buidem.data.model.Weather.Weather
 import com.sergigonzalez.buidem.databinding.FragmentWeatherBinding
 import com.sergigonzalez.buidem.utils.Service
@@ -25,9 +27,6 @@ class WeatherFragment : Fragment() {
     private var _binding: FragmentWeatherBinding? = null
     private val binding get() = _binding!!
     private var utilWidgets = util_widgets()
-    val BASEAPI = "http://api.openweathermap.org/data/2.5/"
-    val API_ID = "5ab85ccd70b8d88070aa1c166d5006bd"
-    val LANG = "es"
 
     private var city: String? = null
 
@@ -53,13 +52,13 @@ class WeatherFragment : Fragment() {
         Dialog.setMessage("Descargando datos...")
         Dialog.show()
         val retrofit = Retrofit.Builder()
-            .baseUrl(BASEAPI)
+            .baseUrl(AppConstants.BASEAPI)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val httpService = retrofit.create(Service::class.java)
 
         val call: Call<Weather> =
-            httpService.getJSON("weather?q=$city&appid=${API_ID}&lang=${LANG}")
+            httpService.getJSON("weather?q=$city&appid=${AppConstants.API_ID}&lang=${AppConstants.LANG}")
 
         call.enqueue(object : Callback<Weather> {
 
