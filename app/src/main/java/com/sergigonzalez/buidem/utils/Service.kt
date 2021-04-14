@@ -1,6 +1,6 @@
 package com.sergigonzalez.buidem.utils
 
-import com.sergigonzalez.buidem.data.model.Weather
+import com.sergigonzalez.buidem.data.model.Weather.Weather
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Url

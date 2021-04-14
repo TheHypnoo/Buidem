@@ -1,7 +1,6 @@
 package com.sergigonzalez.buidem.ui.fragments.Maps
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -18,6 +17,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -31,6 +31,7 @@ import com.sergigonzalez.buidem.utils.util_widgets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 
@@ -50,7 +51,6 @@ class MapsFragment : Fragment() {
     private lateinit var color: String
     private var listMachines: ArrayList<Machines>? = arrayListOf()
     private var listColors: ArrayList<String> = arrayListOf()
-    private var listMachineID: ArrayList<Int> = arrayListOf()
     private var contador = 0
 
     override fun onCreateView(
@@ -63,26 +63,24 @@ class MapsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.title = "Maps"
         database = MachinesApplication.getDatabase(this@MapsFragment.requireActivity())
         mMapView = binding.mvMap
         mMapView.onCreate(savedInstanceState)
         mMapView.onResume()
         if (isNetworkAvailable()) {
             val fragmentWeather =
-                childFragmentManager.findFragmentByTag("fragWeather") as? WeatherFragment
-                    ?: return
+                childFragmentManager.findFragmentByTag("fragWeather") as? WeatherFragment ?: return
             fragmentWeather.view?.visibility = View.GONE
-            getColors().runCatching { startMap() }.runCatching {
-                if (machines != null) {
-                    activity?.let { fragmentWeather.Search(machines!!.townMachine, it) }
-                        .runCatching { fragmentWeather.view?.visibility = View.VISIBLE }
-                } else if (listMachines != null && listMachines!!.size > 0) {
-                    activity?.let { fragmentWeather.Search(listMachines!![0].townMachine, it) }
-                        .runCatching { fragmentWeather.view?.visibility = View.VISIBLE }
-                } else {
-                    fragmentWeather.view?.visibility = View.GONE
-                }
+            CoroutineScope(Dispatchers.IO).launch { getColors() }
+            startMap()
+            if (machines != null) {
+                activity?.let { fragmentWeather.Search(machines!!.townMachine, it) }
+                    .runCatching { fragmentWeather.view?.visibility = View.VISIBLE }
+            } else if (listMachines != null && listMachines!!.size > 0) {
+                activity?.let { fragmentWeather.Search(listMachines!![0].townMachine, it) }
+                    .runCatching { fragmentWeather.view?.visibility = View.VISIBLE }
+            } else {
+                fragmentWeather.view?.visibility = View.GONE
             }
         } else {
             binding.tvNoInternet.visibility = View.VISIBLE
@@ -99,7 +97,7 @@ class MapsFragment : Fragment() {
         mMapView.getMapAsync { mMap ->
             googleMap = mMap
             applyPermissions()
-            markers()
+            lifecycleScope.launch { markers() }
         }
     }
 
@@ -168,7 +166,6 @@ class MapsFragment : Fragment() {
         }
     }
 
-    @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -220,24 +217,21 @@ class MapsFragment : Fragment() {
         return false
     }
 
-    private fun getColors() {
+    private suspend fun getColors() {
         if (listMachines != null) {
             if (listMachines?.size!! > 0) {
                 for (i in listMachines!!.indices) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        color = database.MachinesApplication()
+                    color = withContext(Dispatchers.IO) {
+                        database.MachinesApplication()
                             .searchColorTypeMachine(listMachines!![i].typeMachine).colorTypeMachine
-                    }.invokeOnCompletion {
-                        listColors.add(color)
-                        listMachineID.add(listMachines!![i]._id)
                     }
+                    listColors.add(color)
                 }
             }
         } else if (machines != null) {
             val idMachine = machines?.typeMachine
-
-            CoroutineScope(Dispatchers.IO).launch {
-                color = database.MachinesApplication()
+            color = withContext(Dispatchers.IO) {
+                database.MachinesApplication()
                     .searchColorTypeMachine(idMachine!!).colorTypeMachine
             }
         }
@@ -268,39 +262,38 @@ class MapsFragment : Fragment() {
                     val marker = getLocationFromAddress(
                         machine.addressMachine + " " + machine.townMachine + " " + machine.postalCodeMachine
                     )
-                    for(machineID in listMachineID) {
-                        if (machine._id == machineID) {
-                            googleMap.addMarker(
-                                MarkerOptions().position(marker).title(machine.nameClient)
-                                    .snippet(
-                                        machine.addressMachine + ", " + machine.townMachine + ", " + machine.postalCodeMachine
-                                    ).draggable(true).icon(
-                                        getMarkerIcon(
-                                            listColors[contador]
-                                        )
-                                    )
+                    googleMap.addMarker(
+                        MarkerOptions().position(marker).title(machine.nameClient)
+                            .snippet(
+                                machine.addressMachine + ", " + machine.townMachine + ", " + machine.postalCodeMachine
+                            ).draggable(true).icon(
+                                getMarkerIcon(
+                                    listColors[contador]
+                                )
                             )
-                            contador++
-                        }
-                    }
+                    )
+                    contador++
                     val cameraPosition =
-                        CameraPosition.Builder().target(marker).zoom(10f).build()
+                        CameraPosition.Builder().target(marker).zoom(7.5f).build()
                     googleMap.animateCamera(
                         CameraUpdateFactory.newCameraPosition(
                             cameraPosition
                         )
                     )
-
                 }
+
             } else {
                 utilWidgets.snackbarMessage(
                     binding.root,
                     "No hay maquinas en la zona",
                     false
                 )
+
+
             }
         }
     }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

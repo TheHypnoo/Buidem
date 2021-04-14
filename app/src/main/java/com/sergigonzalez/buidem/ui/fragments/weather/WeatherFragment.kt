@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.sergigonzalez.buidem.data.model.Weather
+import com.sergigonzalez.buidem.data.model.Weather.Weather
 import com.sergigonzalez.buidem.databinding.FragmentWeatherBinding
 import com.sergigonzalez.buidem.utils.Service
 import com.sergigonzalez.buidem.utils.util_widgets
