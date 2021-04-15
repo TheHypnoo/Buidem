@@ -99,11 +99,8 @@ class MapsFragment : Fragment() {
         }
         mMapView.getMapAsync { mMap ->
             googleMap = mMap
-            googleMap.uiSettings.isIndoorLevelPickerEnabled = true
             googleMap.mapType = GoogleMap.MAP_TYPE_HYBRID
-            googleMap.isIndoorEnabled = true
             applyPermissions()
-            //Tipo de maquina y numero de serie
             lifecycleScope.launch { markers() }
         }
     }
@@ -297,7 +294,7 @@ class MapsFragment : Fragment() {
                     if (marker.latitude != 0.0 && marker.latitude != 0.0) {
                         googleMap.addMarker(
                             MarkerOptions().position(marker)
-                                .title(machine.nameClient + ", " + machine.serialNumberMachine + ", " + listNameTypeMachine[0])
+                                .title(machine.nameClient + ", " + machine.serialNumberMachine + ", " + listNameTypeMachine[contador])
                                 .snippet(
                                     machine.addressMachine + ", " + machine.townMachine + ", " + machine.postalCodeMachine
                                 ).draggable(true).icon(
