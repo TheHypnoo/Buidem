@@ -1,79 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/CLWeather"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#409F9F9F"
+    android:layout_height="wrap_content"
+    android:background="#40191919"
     tools:context=".ui.fragments.weather.WeatherFragment">
 
-    <TextView
-        android:id="@+id/tvMessageTvTempMax"
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/cpiWeather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Temp Maxima"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameCity"
-        app:layout_constraintVertical_bias="0.20" />
+        android:layout_centerInParent="true"
+        android:backgroundTint="@color/white"
+        android:indeterminate="true"
+        android:indeterminateTint="#1a09d6"
+        android:max="100" />
+
+    <LinearLayout
+        android:id="@+id/llWeather"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:gravity="center|top">
+
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_serial_number" />
+
+    <!--<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lugar Actual:"
+        android:textSize="20sp" />-->
 
     <TextView
-        android:id="@+id/tvTempMax"
+        android:id="@+id/tvNameCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="100º"
-        android:textColor="#F60C0C"
+        android:text="Tordera"
+        android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameCity"
-        app:layout_constraintVertical_bias="0.25" />
+        android:textColor="@color/black"/>
 
     <TextView
-        android:id="@+id/tvMessageTvTempMin"
+        android:id="@+id/tvWeatherCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Temp Minima"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameCity"
-        app:layout_constraintVertical_bias="0.20" />
-
-    <TextView
-        android:id="@+id/tvTempMin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="100º"
-        android:textColor="#7290E4"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameCity"
-        app:layout_constraintVertical_bias="0.25"/>
-
-    <TextView
-        android:id="@+id/tvMessageTvTempNormal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Temperatura"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.45"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvNameCity"
-        app:layout_constraintVertical_bias="0.20" />
+        android:text="Nubes claras"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/tvTempNormal"
@@ -88,27 +66,57 @@
         app:layout_constraintTop_toBottomOf="@+id/tvNameCity"
         app:layout_constraintVertical_bias="0.25" />
 
-    <ImageView
-        android:id="@+id/imgIcon"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/tvNameCity"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="horizontal"
+        android:gravity="center">
 
-    <TextView
-        android:id="@+id/tvNameCity"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvMessageTvTempMax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temp Maxima"
+            android:layout_gravity="end"
+            android:gravity="end"/>
+
+
+        <TextView
+            android:id="@+id/tvMessageTvTempMin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temp Minima"
+            android:gravity="right"
+            android:layout_gravity="right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lugar Actual:"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:showDividers="middle">
 
+        <TextView
+            android:id="@+id/tvTempMax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100º"
+            android:textColor="#F60C0C"
+            android:textStyle="bold"
+            android:textSize="25sp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvTempMin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100º"
+            android:textColor="#7290E4"
+            android:textStyle="bold"
+            android:textSize="25sp"/>
+    </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

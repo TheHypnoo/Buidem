@@ -136,7 +136,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_postal_code"
-                android:inputType="textPostalAddress"
+                android:inputType="number"
                 android:maxLength="5" />
         </com.google.android.material.textfield.TextInputLayout>
 

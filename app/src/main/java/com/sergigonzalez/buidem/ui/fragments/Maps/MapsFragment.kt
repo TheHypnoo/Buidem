@@ -10,6 +10,8 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,10 +20,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.sergigonzalez.buidem.data.Machines
 import com.sergigonzalez.buidem.data.MachinesApplication
@@ -52,6 +51,9 @@ class MapsFragment : Fragment() {
     private var listMachines: ArrayList<Machines>? = arrayListOf()
     private var listColors: ArrayList<String> = arrayListOf()
     private var contador = 0
+    private var fragmentWeather = WeatherFragment()
+    private var nameTypeMachine = ""
+    private var listNameTypeMachine: ArrayList<String> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,23 +66,24 @@ class MapsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         database = MachinesApplication.getDatabase(this@MapsFragment.requireActivity())
+        fragmentWeather =
+            (childFragmentManager.findFragmentByTag("fragWeather") as? WeatherFragment)!!
+        fragmentWeather.visibility(visible = false, progressbar = true)
         mMapView = binding.mvMap
         mMapView.onCreate(savedInstanceState)
         mMapView.onResume()
         if (isNetworkAvailable()) {
-            val fragmentWeather =
-                childFragmentManager.findFragmentByTag("fragWeather") as? WeatherFragment ?: return
-            fragmentWeather.view?.visibility = View.GONE
-            CoroutineScope(Dispatchers.IO).launch { getColors() }
+            CoroutineScope(Dispatchers.IO).launch {
+                getColors()
+                getTypeMachineName()
+            }
             startMap()
             if (machines != null) {
-                activity?.let { fragmentWeather.Search(machines!!.townMachine, it) }
-                    .runCatching { fragmentWeather.view?.visibility = View.VISIBLE }
+                fragmentWeather.Search(machines!!.townMachine)
             } else if (listMachines != null && listMachines!!.size > 0) {
-                activity?.let { fragmentWeather.Search(listMachines!![0].townMachine, it) }
-                    .runCatching { fragmentWeather.view?.visibility = View.VISIBLE }
+                fragmentWeather.Search(listMachines!![0].townMachine)
             } else {
-                fragmentWeather.view?.visibility = View.GONE
+                fragmentWeather.visibility(visible = false, progressbar = false)
             }
         } else {
             binding.tvNoInternet.visibility = View.VISIBLE
@@ -96,7 +99,11 @@ class MapsFragment : Fragment() {
         }
         mMapView.getMapAsync { mMap ->
             googleMap = mMap
+            googleMap.uiSettings.isIndoorLevelPickerEnabled = true
+            googleMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+            googleMap.isIndoorEnabled = true
             applyPermissions()
+            //Tipo de maquina y numero de serie
             lifecycleScope.launch { markers() }
         }
     }
@@ -108,7 +115,6 @@ class MapsFragment : Fragment() {
         try {
             address = coder.getFromLocationName(_AddressOrZone, 5)
             if (address.isEmpty()) {
-                utilWidgets.snackbarMessage(binding.root, "La dirección esta vacia", false)
                 return LatLng(0.0, 0.0)
             }
             val location = address[0]
@@ -218,15 +224,13 @@ class MapsFragment : Fragment() {
     }
 
     private suspend fun getColors() {
-        if (listMachines != null) {
-            if (listMachines?.size!! > 0) {
-                for (i in listMachines!!.indices) {
-                    color = withContext(Dispatchers.IO) {
-                        database.MachinesApplication()
-                            .searchColorTypeMachine(listMachines!![i].typeMachine).colorTypeMachine
-                    }
-                    listColors.add(color)
+        if (listMachines != null && listMachines?.size!! > 0) {
+            for (i in listMachines!!.indices) {
+                color = withContext(Dispatchers.IO) {
+                    database.MachinesApplication()
+                        .searchColorTypeMachine(listMachines!![i].typeMachine).colorTypeMachine
                 }
+                listColors.add(color)
             }
         } else if (machines != null) {
             val idMachine = machines?.typeMachine
@@ -237,51 +241,89 @@ class MapsFragment : Fragment() {
         }
     }
 
+    private suspend fun getTypeMachineName() {
+        if (machines != null) {
+            nameTypeMachine = withContext(Dispatchers.IO) {
+                database.MachinesApplication()
+                    .searchTypeMachinebyID(machines!!.typeMachine).nameTypeMachine
+            }
+        } else if (listMachines != null && listMachines!!.size > 0) {
+            for (i in listMachines!!.indices) {
+                nameTypeMachine = withContext(Dispatchers.IO) {
+                    database.MachinesApplication()
+                        .searchTypeMachinebyID(listMachines!![i].typeMachine).nameTypeMachine
+                }
+                listNameTypeMachine.add(nameTypeMachine)
+            }
+        }
+    }
+
     private fun markers() {
         if (machines != null) {
             val marker: LatLng = getLocationFromAddress(
                 machines!!.addressMachine + " " + machines!!.townMachine + " " + machines!!.postalCodeMachine
             )
-            googleMap.addMarker(
-                MarkerOptions().position(marker).title(machines!!.nameClient).snippet(
-                    machines!!.addressMachine + ", " + machines!!.townMachine + ", " + machines!!.postalCodeMachine
-                ).draggable(true).icon(
-                    getMarkerIcon(
-                        color
-                    )
+            if (marker.latitude != 0.0 && marker.latitude != 0.0) {
+                googleMap.addMarker(
+                    MarkerOptions().position(marker)
+                        .title(machines!!.nameClient + ", " + machines!!.serialNumberMachine + ", " + nameTypeMachine)
+                        .snippet(
+                            machines!!.addressMachine + ", " + machines!!.townMachine + ", " + machines!!.postalCodeMachine
+                        ).draggable(true).icon(
+                            getMarkerIcon(
+                                color
+                            )
+                        )
                 )
-            )
-            val cameraPosition =
-                CameraPosition.Builder().target(marker).zoom(zoomToAddress.toFloat())
-                    .build()
-            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+                val cameraPosition =
+                    CameraPosition.Builder().target(marker).zoom(zoomToAddress.toFloat())
+                        .build()
+                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+            } else {
+                Handler(Looper.myLooper()!!).postDelayed({
+                    utilWidgets.snackbarMessage(
+                        binding.root,
+                        "No se ha encontrado esa maquina",
+                        false
+                    )
+                }, 1500)
+            }
         } else if (listMachines != null) {
-            println("Maquinas: ${listMachines!!.size}")
             if (listMachines?.size!! > 0) {
                 for (machine in listMachines!!) {
                     val marker = getLocationFromAddress(
                         machine.addressMachine + " " + machine.townMachine + " " + machine.postalCodeMachine
                     )
-                    googleMap.addMarker(
-                        MarkerOptions().position(marker).title(machine.nameClient)
-                            .snippet(
-                                machine.addressMachine + ", " + machine.townMachine + ", " + machine.postalCodeMachine
-                            ).draggable(true).icon(
-                                getMarkerIcon(
-                                    listColors[contador]
+                    if (marker.latitude != 0.0 && marker.latitude != 0.0) {
+                        googleMap.addMarker(
+                            MarkerOptions().position(marker)
+                                .title(machine.nameClient + ", " + machine.serialNumberMachine + ", " + listNameTypeMachine[0])
+                                .snippet(
+                                    machine.addressMachine + ", " + machine.townMachine + ", " + machine.postalCodeMachine
+                                ).draggable(true).icon(
+                                    getMarkerIcon(
+                                        listColors[contador]
+                                    )
                                 )
-                            )
-                    )
-                    contador++
-                    val cameraPosition =
-                        CameraPosition.Builder().target(marker).zoom(7.5f).build()
-                    googleMap.animateCamera(
-                        CameraUpdateFactory.newCameraPosition(
-                            cameraPosition
                         )
-                    )
+                        contador++
+                        val cameraPosition =
+                            CameraPosition.Builder().target(marker).zoom(7.5f).build()
+                        googleMap.animateCamera(
+                            CameraUpdateFactory.newCameraPosition(
+                                cameraPosition
+                            )
+                        )
+                    } else {
+                        Handler(Looper.myLooper()!!).postDelayed({
+                            utilWidgets.snackbarMessage(
+                                binding.root,
+                                "No se ha encontrado maquina con SerialNumber: ${machine.serialNumberMachine}",
+                                false
+                            )
+                        }, 1500)
+                    }
                 }
-
             } else {
                 utilWidgets.snackbarMessage(
                     binding.root,

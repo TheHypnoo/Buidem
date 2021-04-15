@@ -1,16 +1,14 @@
 package com.sergigonzalez.buidem.ui.fragments.weather
 
-import android.app.ProgressDialog
-import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.StrictMode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.sergigonzalez.buidem.application.AppConstants
 import com.sergigonzalez.buidem.data.model.Weather.Weather
 import com.sergigonzalez.buidem.databinding.FragmentWeatherBinding
@@ -27,8 +25,7 @@ class WeatherFragment : Fragment() {
     private var _binding: FragmentWeatherBinding? = null
     private val binding get() = _binding!!
     private var utilWidgets = util_widgets()
-
-    private var city: String? = null
+    var found = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,15 +39,16 @@ class WeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-        visibility(false)
     }
 
-    fun Search(city: String, activity: FragmentActivity) {
-        val Dialog = ProgressDialog(activity)
+    fun Search(city: String) {
+        found = false
+        visibility(visible = false, progressbar = true)
+        /*val Dialog = ProgressDialog(activity)
         Dialog.setCancelable(false)
         Dialog.setCanceledOnTouchOutside(false)
         Dialog.setMessage("Descargando datos...")
-        Dialog.show()
+        Dialog.show()*/
         val retrofit = Retrofit.Builder()
             .baseUrl(AppConstants.BASEAPI)
             .addConverterFactory(GsonConverterFactory.create())
@@ -65,9 +63,10 @@ class WeatherFragment : Fragment() {
             override fun onFailure(call: Call<Weather>, t: Throwable) {
                 t.message?.let {
                     println(it)
-                    utilWidgets.snackbarMessage(binding.root, it, false)
+                    utilWidgets.snackbarMessage(binding.root, "Error Weather: $it", false)
+                    visibility(visible = false, progressbar = false)
                 }
-                Dialog.hide()
+                //Dialog.hide()
 
             }
 
@@ -75,17 +74,18 @@ class WeatherFragment : Fragment() {
             override fun onResponse(call: Call<Weather>?, response: Response<Weather>?) {
 
                 if (!response!!.isSuccessful) {
-                    utilWidgets.snackbarMessage(binding.root, response.code().toString(), false)
-                    Dialog.hide()
+                    utilWidgets.snackbarMessage(binding.root, "Error Weather: ${response.code().toString()}", false)
+                    //Dialog.hide()
+                    visibility(visible = false, progressbar = false)
                     return
 
                 }
-                Dialog.setMessage("Procesando datos...")
+                //Dialog.setMessage("Procesando datos...")
                 val cityList = response.body()
 
                 if (cityList != null) {
 
-                    binding.tvNameCity.text = "Tiempo actual en ${cityList.name}"
+                    binding.tvNameCity.text = "${cityList.name}"
                     binding.tvTempMax.text =
                         "${utilWidgets.convertFahreheit(cityList.main.tempMax).toInt()} º"
                     binding.tvTempMin.text =
@@ -107,23 +107,33 @@ class WeatherFragment : Fragment() {
                     val bmp = BitmapFactory.decodeStream(uri.openConnection().getInputStream())
                     binding.imgIcon.setImageBitmap(bmp)
 
-                    Dialog.hide()
+                    //Dialog.hide()
+                    Handler(Looper.myLooper()!!).postDelayed({
+                        visibility(visible = true, progressbar = false)
+                        found = true
+                    }, 1500)
                 }
             }
-        }).runCatching { visibility(true) }
+        }
+        )
+
 
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        city = arguments?.getString("City")
-    }
-
-    private fun visibility(visible: Boolean) {
-        if (visible) {
-            binding.CLWeather.visibility = View.VISIBLE
-        } else {
-            binding.CLWeather.visibility = View.GONE
+    fun visibility(visible: Boolean, progressbar: Boolean) {
+        when {
+            visible -> {
+                binding.llWeather.visibility = View.VISIBLE
+                binding.cpiWeather.visibility = View.GONE
+            }
+            progressbar -> {
+                binding.llWeather.visibility = View.GONE
+                binding.cpiWeather.visibility = View.VISIBLE
+            }
+            else -> {
+                binding.llWeather.visibility = View.GONE
+                binding.cpiWeather.visibility = View.GONE
+            }
         }
     }
 
