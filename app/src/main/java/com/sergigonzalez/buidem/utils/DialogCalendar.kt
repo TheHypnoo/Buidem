@@ -9,7 +9,7 @@ import java.util.*
 object DialogCalendar {
     private val c = Calendar.getInstance()
     private var dates: String? = null
-    fun dialog(_context: Context?, edt: TextView) {
+    fun dialog(_context: Context?, edt: TextView): String? {
         val year = c[Calendar.YEAR]
         val month = c[Calendar.MONTH]
         val day = c[Calendar.DAY_OF_MONTH]
@@ -26,6 +26,7 @@ object DialogCalendar {
             edt.text = dates
         }, year, month, day)
         datePickerDialog.show()
+        return dates
     }
 
     fun changeFormatDate(day: String, FormatOrigin: String?, FormatFinal: String?): String {

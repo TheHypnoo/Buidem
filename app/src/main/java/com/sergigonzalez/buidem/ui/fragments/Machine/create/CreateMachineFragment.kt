@@ -36,11 +36,6 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private var _binding: FragmentCreateMachineBinding? = null
     private val binding get() = _binding!!
     private lateinit var database: MachinesApplication
-    private val c = Calendar.getInstance()
-    private var _year = c[Calendar.YEAR]
-    private var _month = c[Calendar.MONTH]
-    private var _day = c[Calendar.DAY_OF_MONTH]
-    private var date: String? = null
     private var listZones: List<Zones> = emptyList()
     private var listTypeMachines: List<TypeMachines> = emptyList()
     private var selectedZone: Int = 0
@@ -61,7 +56,6 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         database = MachinesApplication.getDatabase(this@CreateMachineFragment.requireContext())
-        date()
         getZones()
         getTypeMachines()
         if (machine != null) {
@@ -94,11 +88,12 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     private fun date() {
-        _year = c[Calendar.YEAR]
-        _month = c[Calendar.MONTH]
-        _day = c[Calendar.DAY_OF_MONTH]
+        val c = Calendar.getInstance()
+        val _year = c[Calendar.YEAR]
+        val _month = c[Calendar.MONTH]
+        val _day = c[Calendar.DAY_OF_MONTH]
 
-        date = if (_month < 10 && _day < 10) {
+        val date: String = if (_month < 10 && _day < 10) {
             "0" + _day + "/" + "0" + (_month + 1) + "/" + _year
         } else if (_month < 10) {
             _day.toString() + "/" + "0" + (_month + 1) + "/" + _year
@@ -108,8 +103,11 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
             _day.toString() + "/" + (_month + 1) + "/" + _year
         }
 
-        binding.etDateLastRevision.text?.append(date)
-        binding.etDateLastRevision.inputType = InputType.TYPE_NULL
+        binding.etDateLastRevision.setText(date)
+    }
+
+    private fun create() {
+        date()
         binding.etDateLastRevision
             .setOnClickListener { v ->
                 DialogCalendar.dialog(
@@ -117,9 +115,6 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     binding.etDateLastRevision
                 )
             }
-    }
-
-    private fun create() {
         binding.btnCreateMachine.setOnClickListener {
             if (Check()) {
                 val machine = Machines(
@@ -131,7 +126,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     binding.etPhoneContact.text.toString(),
                     binding.etEmailContact.text.toString(),
                     binding.etSerialNumberMachine.text.toString(),
-                    date!!,
+                    binding.etDateLastRevision.text.toString(),
                     selectedTypeMachine,
                     selectedZone
                 )
@@ -459,6 +454,13 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     private fun edit() {
+        binding.etDateLastRevision
+            .setOnClickListener { v ->
+                DialogCalendar.dialog(
+                    v.context,
+                    binding.etDateLastRevision
+                )
+            }
         binding.btnCreateMachine.text = "Edit Machine"
         binding.etNameClient.setText(machine?.nameClient)
         binding.etSerialNumberMachine.setText(machine?.serialNumberMachine)
@@ -480,7 +482,7 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     binding.etPhoneContact.text.toString(),
                     binding.etEmailContact.text.toString(),
                     binding.etSerialNumberMachine.text.toString(),
-                    date!!,
+                    binding.etDateLastRevision.text.toString(),
                     selectedTypeMachine,
                     selectedZone
                 )
