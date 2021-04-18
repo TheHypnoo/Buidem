@@ -93,9 +93,9 @@ class WeatherFragment : Fragment() {
 
                     binding.tvTempNormal.text =
                         "${utilWidgets.convertFahreheit(cityList.main.temp).toInt()} º"
-                    /*
-                    binding.tvWeather.text = cityList.weather[0].description
 
+                    binding.tvWeatherCity.text = cityList.weather[0].description
+/*
                     binding.tvFeel.text =
                         "Sensacion termica: ${Convert(cityList.main.feelsLike).toInt()} º"
                     binding.tvPres.text = "Presion: ${cityList.main.pressure} mb"
@@ -133,6 +133,7 @@ class WeatherFragment : Fragment() {
             else -> {
                 binding.llWeather.visibility = View.GONE
                 binding.cpiWeather.visibility = View.GONE
+                binding.RLWeather.visibility = View.GONE
             }
         }
     }

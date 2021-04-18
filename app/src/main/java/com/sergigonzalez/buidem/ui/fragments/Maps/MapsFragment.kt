@@ -34,7 +34,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 
 
-class MapsFragment : Fragment() {
+class MapsFragment : Fragment(), GoogleMap.OnMarkerClickListener {
     companion object {
         const val REQUEST_CODE_LOCATION = 0
     }
@@ -102,6 +102,7 @@ class MapsFragment : Fragment() {
             googleMap.mapType = GoogleMap.MAP_TYPE_HYBRID
             applyPermissions()
             lifecycleScope.launch { markers() }
+            googleMap.setOnMarkerClickListener(this)
         }
     }
 
@@ -330,6 +331,11 @@ class MapsFragment : Fragment() {
         }
     }
 
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        val town = p0!!.snippet.split(",")
+        fragmentWeather.Search(town[1])
+        return false
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -356,5 +362,7 @@ class MapsFragment : Fragment() {
         super.onLowMemory()
         mMapView.onLowMemory()
     }
+
+
 
 }

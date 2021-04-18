@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#40191919"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/RLWeather"
+    android:background="#4C63FF"
     tools:context=".ui.fragments.weather.WeatherFragment">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
@@ -15,14 +17,22 @@
         android:backgroundTint="@color/white"
         android:indeterminate="true"
         android:indeterminateTint="#1a09d6"
+        android:visibility="gone"
         android:max="100" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="5dp"
+        card_view:cardUseCompatPadding="true">
 
     <LinearLayout
         android:id="@+id/llWeather"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone"
+        android:visibility="visible"
         android:gravity="center|top">
 
     <ImageView
@@ -44,13 +54,14 @@
         android:text="Tordera"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@color/black"/>
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/tvWeatherCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nubes claras"
+        android:textColor="#FFFFFF"
         android:textSize="20sp" />
 
     <TextView
@@ -59,6 +70,8 @@
         android:layout_height="wrap_content"
         android:text="100º"
         android:textStyle="bold"
+        android:textSize="25sp"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.45"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -73,21 +86,35 @@
         android:gravity="center">
 
         <TextView
+            android:id="@+id/tvTempMax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100º"
+            android:textColor="#F60C0C"
+            android:textStyle="bold"
+            android:textSize="25sp"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/tvMessageTvTempMax"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Temp Maxima"
-            android:layout_gravity="end"
-            android:gravity="end"/>
+            android:src="@drawable/ic_high_temperature"/>
 
 
-        <TextView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/tvMessageTvTempMin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Temp Minima"
-            android:gravity="right"
-            android:layout_gravity="right"/>
+            android:src="@drawable/ic_low_temperature"/>
+
+        <TextView
+            android:id="@+id/tvTempMin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100º"
+            android:textColor="#7290E4"
+            android:textStyle="bold"
+            android:textSize="25sp"/>
 
     </LinearLayout>
 
@@ -98,25 +125,12 @@
         android:orientation="horizontal"
         android:showDividers="middle">
 
-        <TextView
-            android:id="@+id/tvTempMax"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="100º"
-            android:textColor="#F60C0C"
-            android:textStyle="bold"
-            android:textSize="25sp"/>
 
-        <TextView
-            android:id="@+id/tvTempMin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="100º"
-            android:textColor="#7290E4"
-            android:textStyle="bold"
-            android:textSize="25sp"/>
+
+
     </LinearLayout>
 
     </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </RelativeLayout>
