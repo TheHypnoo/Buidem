@@ -45,7 +45,7 @@ class MapsFragment : Fragment() {
     lateinit var mMapView: MapView
     private lateinit var googleMap: GoogleMap
     private var machines: Machines? = null
-    private var zoomToAddress = 15
+    private var zoomToAddress = 18
     private var utilWidgets = util_widgets()
     private lateinit var color: String
     private var listMachines: ArrayList<Machines>? = arrayListOf()
@@ -54,6 +54,7 @@ class MapsFragment : Fragment() {
     private var fragmentWeather = WeatherFragment()
     private var nameTypeMachine = ""
     private var listNameTypeMachine: ArrayList<String> = arrayListOf()
+    private var listMarkers: ArrayList<LatLng> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,8 +75,7 @@ class MapsFragment : Fragment() {
         mMapView.onResume()
         if (isNetworkAvailable()) {
             CoroutineScope(Dispatchers.IO).launch {
-                getColors()
-                getTypeMachineName()
+                getColorsAndNamesTypeMachine()
             }
             startMap()
             if (machines != null) {
@@ -220,38 +220,40 @@ class MapsFragment : Fragment() {
         return false
     }
 
-    private suspend fun getColors() {
+    private suspend fun getColorsAndNamesTypeMachine() {
         if (listMachines != null && listMachines?.size!! > 0) {
             for (i in listMachines!!.indices) {
                 color = withContext(Dispatchers.IO) {
                     database.MachinesApplication()
                         .searchColorTypeMachine(listMachines!![i].typeMachine).colorTypeMachine
                 }
-                listColors.add(color)
-            }
-        } else if (machines != null) {
-            val idMachine = machines?.typeMachine
-            color = withContext(Dispatchers.IO) {
-                database.MachinesApplication()
-                    .searchColorTypeMachine(idMachine!!).colorTypeMachine
-            }
-        }
-    }
-
-    private suspend fun getTypeMachineName() {
-        if (machines != null) {
-            nameTypeMachine = withContext(Dispatchers.IO) {
-                database.MachinesApplication()
-                    .searchTypeMachinebyID(machines!!.typeMachine).nameTypeMachine
-            }
-        } else if (listMachines != null && listMachines!!.size > 0) {
-            for (i in listMachines!!.indices) {
                 nameTypeMachine = withContext(Dispatchers.IO) {
                     database.MachinesApplication()
                         .searchTypeMachinebyID(listMachines!![i].typeMachine).nameTypeMachine
                 }
                 listNameTypeMachine.add(nameTypeMachine)
+                listColors.add(color)
             }
+        } else if (machines != null) {
+            nameTypeMachine = withContext(Dispatchers.IO) {
+                database.MachinesApplication()
+                    .searchTypeMachinebyID(machines!!.typeMachine).nameTypeMachine
+            }
+            color = withContext(Dispatchers.IO) {
+                database.MachinesApplication()
+                    .searchColorTypeMachine(machines!!.typeMachine).colorTypeMachine
+            }
+        }
+    }
+
+    private fun calculateZoom(){
+        if(listMarkers.size > 0) {
+            val builder = LatLngBounds.builder()
+            for(marker in listMarkers){
+                builder.include(marker)
+            }
+            val bounds = builder.build()
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
         }
     }
 
@@ -272,7 +274,7 @@ class MapsFragment : Fragment() {
                             )
                         )
                 )
-                val cameraPosition =
+               val cameraPosition =
                     CameraPosition.Builder().target(marker).zoom(zoomToAddress.toFloat())
                         .build()
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
@@ -304,13 +306,7 @@ class MapsFragment : Fragment() {
                                 )
                         )
                         contador++
-                        val cameraPosition =
-                            CameraPosition.Builder().target(marker).zoom(7.5f).build()
-                        googleMap.animateCamera(
-                            CameraUpdateFactory.newCameraPosition(
-                                cameraPosition
-                            )
-                        )
+                        listMarkers.add(marker)
                     } else {
                         Handler(Looper.myLooper()!!).postDelayed({
                             utilWidgets.snackbarMessage(
@@ -321,14 +317,15 @@ class MapsFragment : Fragment() {
                         }, 1500)
                     }
                 }
+                if(listMarkers.isNotEmpty()) {
+                    calculateZoom()
+                }
             } else {
                 utilWidgets.snackbarMessage(
                     binding.root,
                     "No hay maquinas en la zona",
                     false
                 )
-
-
             }
         }
     }

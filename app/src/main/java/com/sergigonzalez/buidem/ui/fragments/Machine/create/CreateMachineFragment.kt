@@ -299,10 +299,6 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
         binding.ivCreateZone.setOnClickListener {
             createZoneifEmpty()
         }
-        if (createdZone) {
-            selectedZone = listZones[listZones.size - 1]._id
-            binding.spZone.setSelection(listZones.size - 1)
-        }
     }
 
     private fun createZoneifEmpty() {
@@ -459,10 +455,6 @@ class CreateMachineFragment : Fragment(), AdapterView.OnItemSelectedListener {
             binding.ivCreateTypeMachine.setOnClickListener {
                 createTypeMachineifEmpty()
             }
-        }
-        if (createdTypeMachine) {
-            selectedTypeMachine = listTypeMachines[listTypeMachines.size - 1]._id
-            binding.spTypeMachine.setSelection(listTypeMachines.size - 1)
         }
     }
 
