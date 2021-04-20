@@ -27,6 +27,7 @@ class WeatherFragment : Fragment() {
     private var utilWidgets = util_widgets()
     var found = false
     var close = false
+    var first = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,27 +41,30 @@ class WeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-        binding.ivIconWeather.setOnClickListener{
+        binding.ivIconWeather.setOnClickListener {
             closeOrOpen()
         }
-        binding.ivCloseWeather.setOnClickListener{
+        binding.ivCloseWeather.setOnClickListener {
             closeOrOpen()
         }
     }
 
-    private fun closeOrOpen(){
-        if(close) {
-            visibility(false,false,true)
-            close = false
+    private fun closeOrOpen() {
+        close = if (close) {
+            visibility(false, false, true)
+            false
         } else {
-            visibility(true,false,false)
-            close = true
+            visibility(true, false, false)
+            true
         }
+        println(close)
     }
 
     fun Search(city: String) {
         found = false
-        visibility(visible = false, progressbar = true, false)
+        if (close || !first) {
+            visibility(visible = false, progressbar = true, false)
+        }
         /*val Dialog = ProgressDialog(activity)
         Dialog.setCancelable(false)
         Dialog.setCanceledOnTouchOutside(false)
@@ -80,8 +84,10 @@ class WeatherFragment : Fragment() {
             override fun onFailure(call: Call<Weather>, t: Throwable) {
                 t.message?.let {
                     println(it)
-                    utilWidgets.snackbarMessage(binding.root, "Error Weather: $it", false)
-                    visibility(visible = false, progressbar = false, false)
+                    if (close || !first) {
+                        utilWidgets.snackbarMessage(binding.root, "Error Weather: $it", false)
+                        visibility(visible = false, progressbar = false, false)
+                    }
                 }
                 //Dialog.hide()
 
@@ -91,9 +97,15 @@ class WeatherFragment : Fragment() {
             override fun onResponse(call: Call<Weather>?, response: Response<Weather>?) {
 
                 if (!response!!.isSuccessful) {
-                    utilWidgets.snackbarMessage(binding.root, "Error Weather: ${response.code().toString()}", false)
-                    //Dialog.hide()
-                    visibility(visible = false, progressbar = false,false)
+                    if (close || !first) {
+                        utilWidgets.snackbarMessage(
+                            binding.root,
+                            "Error Weather: ${response.code()}",
+                            false
+                        )
+                        //Dialog.hide()
+                        visibility(visible = false, progressbar = false, false)
+                    }
                     return
 
                 }
@@ -125,15 +137,17 @@ class WeatherFragment : Fragment() {
                     binding.imgIcon.setImageBitmap(bmp)
 
                     //Dialog.hide()
-                    Handler(Looper.myLooper()!!).postDelayed({
-                        visibility(visible = true, progressbar = false,false)
-                        found = true
-                    }, 1500)
+                    if (close || !first) {
+                        Handler(Looper.myLooper()!!).postDelayed({
+                            visibility(visible = true, progressbar = false, false)
+                            found = true
+                            first = true
+                        }, 1500)
+                    }
                 }
             }
         }
         )
-
 
     }
 
