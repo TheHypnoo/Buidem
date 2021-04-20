@@ -26,6 +26,7 @@ class WeatherFragment : Fragment() {
     private val binding get() = _binding!!
     private var utilWidgets = util_widgets()
     var found = false
+    var close = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,11 +40,27 @@ class WeatherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
+        binding.ivIconWeather.setOnClickListener{
+            closeOrOpen()
+        }
+        binding.ivCloseWeather.setOnClickListener{
+            closeOrOpen()
+        }
+    }
+
+    private fun closeOrOpen(){
+        if(close) {
+            visibility(false,false,true)
+            close = false
+        } else {
+            visibility(true,false,false)
+            close = true
+        }
     }
 
     fun Search(city: String) {
         found = false
-        visibility(visible = false, progressbar = true)
+        visibility(visible = false, progressbar = true, false)
         /*val Dialog = ProgressDialog(activity)
         Dialog.setCancelable(false)
         Dialog.setCanceledOnTouchOutside(false)
@@ -64,7 +81,7 @@ class WeatherFragment : Fragment() {
                 t.message?.let {
                     println(it)
                     utilWidgets.snackbarMessage(binding.root, "Error Weather: $it", false)
-                    visibility(visible = false, progressbar = false)
+                    visibility(visible = false, progressbar = false, false)
                 }
                 //Dialog.hide()
 
@@ -76,7 +93,7 @@ class WeatherFragment : Fragment() {
                 if (!response!!.isSuccessful) {
                     utilWidgets.snackbarMessage(binding.root, "Error Weather: ${response.code().toString()}", false)
                     //Dialog.hide()
-                    visibility(visible = false, progressbar = false)
+                    visibility(visible = false, progressbar = false,false)
                     return
 
                 }
@@ -109,7 +126,7 @@ class WeatherFragment : Fragment() {
 
                     //Dialog.hide()
                     Handler(Looper.myLooper()!!).postDelayed({
-                        visibility(visible = true, progressbar = false)
+                        visibility(visible = true, progressbar = false,false)
                         found = true
                     }, 1500)
                 }
@@ -120,20 +137,30 @@ class WeatherFragment : Fragment() {
 
     }
 
-    fun visibility(visible: Boolean, progressbar: Boolean) {
+    fun visibility(visible: Boolean, progressbar: Boolean, icon: Boolean) {
         when {
             visible -> {
                 binding.llWeather.visibility = View.VISIBLE
                 binding.cpiWeather.visibility = View.GONE
+                binding.ivCloseWeather.visibility = View.VISIBLE
+                binding.ivIconWeather.visibility = View.GONE
             }
             progressbar -> {
                 binding.llWeather.visibility = View.GONE
                 binding.cpiWeather.visibility = View.VISIBLE
+                binding.ivCloseWeather.visibility = View.GONE
+            }
+            icon -> {
+                binding.llWeather.visibility = View.GONE
+                binding.cpiWeather.visibility = View.GONE
+                binding.ivCloseWeather.visibility = View.GONE
+                binding.ivIconWeather.visibility = View.VISIBLE
             }
             else -> {
                 binding.llWeather.visibility = View.GONE
                 binding.cpiWeather.visibility = View.GONE
                 binding.RLWeather.visibility = View.GONE
+                binding.ivCloseWeather.visibility = View.GONE
             }
         }
     }

@@ -91,6 +91,7 @@ class CreateTypeMachineFragment : Fragment() {
     }
 
     fun edit() {
+        binding.btnCreateTypeMachine.text = "Edit Type Machine"
         binding.editTextTypeMachine.setText(typeMachines?.nameTypeMachine)
         if (!typeMachines?.colorTypeMachine.isNullOrEmpty()) {
             binding.colorBackground.setBackgroundColor(typeMachines?.colorTypeMachine!!.toColorInt())

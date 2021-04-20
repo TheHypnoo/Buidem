@@ -69,7 +69,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerClickListener {
         database = MachinesApplication.getDatabase(this@MapsFragment.requireActivity())
         fragmentWeather =
             (childFragmentManager.findFragmentByTag("fragWeather") as? WeatherFragment)!!
-        fragmentWeather.visibility(visible = false, progressbar = true)
+        fragmentWeather.visibility(visible = false, progressbar = true, false)
         mMapView = binding.mvMap
         mMapView.onCreate(savedInstanceState)
         mMapView.onResume()
@@ -83,7 +83,7 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerClickListener {
             } else if (listMachines != null && listMachines!!.size > 0) {
                 fragmentWeather.Search(listMachines!![0].townMachine)
             } else {
-                fragmentWeather.visibility(visible = false, progressbar = false)
+                fragmentWeather.visibility(visible = false, progressbar = false, false)
             }
         } else {
             binding.tvNoInternet.visibility = View.VISIBLE
@@ -362,7 +362,4 @@ class MapsFragment : Fragment(), GoogleMap.OnMarkerClickListener {
         super.onLowMemory()
         mMapView.onLowMemory()
     }
-
-
-
 }

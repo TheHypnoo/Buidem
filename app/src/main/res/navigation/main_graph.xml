@@ -55,7 +55,7 @@
     <fragment
         android:id="@+id/createMachine"
         android:name="com.sergigonzalez.buidem.ui.fragments.Machine.create.CreateMachineFragment"
-        android:label="CreateMachine"
+        android:label="Machine"
         tools:layout="@layout/fragment_create_machine">
         <action
             android:id="@+id/action_createMachine_to_MachineFragment"
@@ -67,7 +67,7 @@
     <fragment
         android:id="@+id/createZone"
         android:name="com.sergigonzalez.buidem.ui.fragments.Zone.create.CreateZonesFragment"
-        android:label="CreateZone"
+        android:label="Zone"
         tools:layout="@layout/fragment_create_zones">
         <action
             android:id="@+id/action_createZone_to_ZoneFragment"
@@ -80,7 +80,7 @@
     <fragment
         android:id="@+id/createTypeMachine"
         android:name="com.sergigonzalez.buidem.ui.fragments.TypeMachine.create.CreateTypeMachineFragment"
-        android:label="CreateTypeMachine"
+        android:label="TypeMachine"
         tools:layout="@layout/fragment_create_type_machine">
         <action
             android:id="@+id/action_createTypeMachine_to_TypeMachineFragment"

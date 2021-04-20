@@ -96,6 +96,7 @@ class CreateZonesFragment : Fragment() {
     }
 
     fun edit() {
+        binding.btnCreateZone.text = "Edit Zone"
         binding.editTextZone.setText(zone?.nameZone)
         binding.btnCreateZone.setOnClickListener {
             if (binding.editTextZone.text?.isEmpty() == true) {

@@ -6,19 +6,15 @@
     android:layout_height="wrap_content"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/RLWeather"
-    android:background="#4C63FF"
     tools:context=".ui.fragments.weather.WeatherFragment">
 
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/cpiWeather"
+    <ImageView
+        android:id="@+id/ivIconWeather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:backgroundTint="@color/white"
-        android:indeterminate="true"
-        android:indeterminateTint="#1a09d6"
-        android:visibility="gone"
-        android:max="100" />
+        android:src="@drawable/ic_weather"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -26,6 +22,31 @@
         card_view:cardCornerRadius="10dp"
         card_view:cardElevation="5dp"
         card_view:cardUseCompatPadding="true">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/cpiWeather"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:backgroundTint="@color/white"
+            android:indeterminate="true"
+            android:indeterminateTint="#1a09d6"
+            android:visibility="gone"
+            android:max="100" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+            android:gravity="end">
+            <ImageView
+                android:id="@+id/ivCloseWeather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_close" />
+        </LinearLayout>
 
     <LinearLayout
         android:id="@+id/llWeather"
@@ -40,6 +61,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_serial_number" />
+
+<!--        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"></LinearLayout>-->
+
+
 
     <!--<TextView
         android:layout_width="wrap_content"
