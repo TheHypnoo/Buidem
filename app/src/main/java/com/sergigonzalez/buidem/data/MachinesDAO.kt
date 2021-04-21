@@ -16,7 +16,7 @@ interface MachinesDAO {
     fun getAllZones(): LiveData<List<Zones>>
 
     //NameClient A0,Z1. Zone A2,Z3. TownMachine A4,Z5. AddressMachine A6,Z7. lastDateRevision A8,Z9.
-    @Query("SELECT * FROM Machines ORDER BY CASE WHEN :order = 0 THEN nameClient END ASC, CASE WHEN :order = 1 THEN nameClient END DESC, CASE WHEN :order = 2 THEN zone END ASC, CASE WHEN :order = 3 THEN zone END DESC, CASE WHEN :order = 4 THEN townMachine END ASC, CASE WHEN :order = 5 THEN townMachine END DESC, CASE WHEN :order = 6 THEN addressMachine END ASC,  CASE WHEN :order = 7 THEN addressMachine END DESC,  CASE WHEN :order = 8 THEN lastRevisionDateMachine END ASC,  CASE WHEN :order = 9 THEN lastRevisionDateMachine END DESC")
+    @Query("SELECT * FROM Machines ORDER BY CASE WHEN :order = 0 THEN nameClient END ASC, CASE WHEN :order = 1 THEN nameClient END DESC, CASE WHEN :order = 2 THEN zone END ASC, CASE WHEN :order = 3 THEN zone END DESC, CASE WHEN :order = 4 THEN townMachine END ASC, CASE WHEN :order = 5 THEN townMachine END DESC, CASE WHEN :order = 6 THEN addressMachine END ASC,  CASE WHEN :order = 7 THEN addressMachine END DESC,  CASE WHEN :order = 8 THEN lastRevisionDateMachine END DESC,  CASE WHEN :order = 9 THEN lastRevisionDateMachine END ASC")
     fun getAllMachinesOrder(order: Int): LiveData<List<Machines>>
 
     @Query("SELECT * FROM Machines WHERE zone = :id")
